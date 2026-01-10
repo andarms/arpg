@@ -20,9 +20,9 @@ public class Window
   {
     while (!WindowShouldClose())
     {
-      BeginDrawing();
       float dt = GetFrameTime();
       Game.Update(dt);
+      BeginDrawing();
       Game.Draw();
       EndDrawing();
     }

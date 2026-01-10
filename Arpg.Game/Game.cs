@@ -1,9 +1,29 @@
+using Arpg.Game.Scenes;
+
 namespace Arpg.Game;
 
 public static class Game
 {
-  public static void Initialize() { }
-  public static void Update(float dt) { }
-  public static void Draw() { }
-  public static void Terminate() { }
+  public static ScenesController Scenes { get; } = new();
+
+  public static void Initialize()
+  {
+    Scenes.Register(new GameplayScene());
+    Scenes.SwitchTo<GameplayScene>();
+    Scenes.CurrentScene?.Initialize();
+  }
+
+  public static void Update(float dt)
+  {
+    Scenes.CurrentScene?.Update(dt);
+  }
+  public static void Draw()
+  {
+    Scenes.CurrentScene?.Draw();
+  }
+
+  public static void Terminate()
+  {
+    Scenes.CurrentScene?.Terminate();
+  }
 }
