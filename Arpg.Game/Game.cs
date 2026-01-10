@@ -1,3 +1,4 @@
+using Arpg.Game.Gom;
 using Arpg.Game.Scenes;
 
 namespace Arpg.Game;
@@ -25,5 +26,15 @@ public static class Game
   public static void Terminate()
   {
     Scenes.CurrentScene?.Terminate();
+  }
+
+  public static void Add(GameObject gameObject)
+  {
+    Scenes.CurrentScene?.Add(gameObject);
+  }
+
+  public static void Remove(GameObject gameObject)
+  {
+    Scenes.CurrentScene?.Remove(gameObject);
   }
 }
