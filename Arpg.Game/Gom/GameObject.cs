@@ -12,15 +12,3 @@ public abstract class GameObject
 
   public virtual void Terminate() { }
 }
-
-
-public class Player : GameObject
-{
-  Vector2 size = new(16, 16);
-
-  public override void Draw()
-  {
-    base.Draw();
-    DrawRectangleV(Position, size, Color.Blue);
-  }
-}
