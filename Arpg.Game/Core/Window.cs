@@ -26,6 +26,7 @@ public class Window
     {
       float dt = GetFrameTime();
       Game.Update(dt);
+      ClearBackground(Color.Black);
       BeginDrawing();
       BeginMode2D(Game.Viewport.Camera);
       Game.Draw();

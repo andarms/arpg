@@ -4,6 +4,7 @@ public static class AssetsManager
 {
   const string ASSETS_PATH = "Assets/";
   public static readonly Dictionary<string, Texture2D> Textures = [];
+  public static readonly Dictionary<string, List<int>> Maps = [];
   public static Font DefaultFont { get; private set; }
 
 
@@ -31,6 +32,47 @@ public static class AssetsManager
 
     // Load fonts
     DefaultFont = LoadFont(Path.Combine(ASSETS_PATH, "Fonts/monogram-extended.ttf"));
+
+
+    string tilemapsPath = Path.Combine(ASSETS_PATH, "Tilemaps");
+    if (Directory.Exists(tilemapsPath))
+    {
+      var tilemapFiles = Directory.GetFiles(tilemapsPath, "*.txt", SearchOption.AllDirectories);
+      foreach (var file in tilemapFiles)
+      {
+        string relativePath = Path.GetRelativePath(tilemapsPath, file);
+        string key = relativePath.Replace('\\', '/');
+        key = key[0..^4];
+
+        // For simplicity, assume all tilemaps are 20x15
+        List<int> tiles = LoadTilemapLayer(file, 20, 15);
+        Maps[key] = tiles;
+      }
+    }
+    else
+    {
+      Console.WriteLine($"Tilemaps directory not found: {tilemapsPath}");
+    }
+  }
+
+
+  public static List<int> LoadTilemapLayer(string filePath, int width, int height)
+  {
+    List<int> tiles = [];
+    if (File.Exists(filePath))
+    {
+      var lines = File.ReadAllLines(filePath);
+      foreach (var line in lines)
+      {
+        var tileIndices = line.Split(',').Select(s => int.Parse(s.Trim()));
+        tiles.AddRange(tileIndices);
+      }
+    }
+    else
+    {
+      Console.WriteLine($"Tilemap layer file not found: {filePath}");
+    }
+    return tiles;
   }
 
   internal static void UnloadAssets()

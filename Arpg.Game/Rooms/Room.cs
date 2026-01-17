@@ -24,7 +24,6 @@ public class Room
 
   public virtual void Draw()
   {
-    ClearBackground(BackgroundColor);
     IEnumerable<GameObject> sortedObjects = objects.OrderBy(go => go.Position.Y);
     foreach (GameObject go in sortedObjects)
     {
