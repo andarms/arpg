@@ -13,17 +13,21 @@ public abstract class GameObject : IReadonlyGameObject
   public Vector2 Position { get; set; } = Vector2.Zero;
   public GameObjectStateMachine States { get; } = new();
   public IReadOnlyList<GameObjectComponent> Components => components;
-  private readonly List<GameObjectComponent> components = [];
+  protected readonly List<GameObjectComponent> components = [];
 
   public GameObjectSprite? Sprite { get; set; }
 
 
   public virtual void Initialize()
   {
+    // States.Initialize(this);
+    components.ForEach(c => c.Attach(this));
   }
 
   public virtual void Update(float dt)
   {
+    // States.Update(this, dt);
+    components.ForEach(c => c.Update(dt));
   }
 
   public virtual void Draw()

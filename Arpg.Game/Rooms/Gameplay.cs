@@ -1,13 +1,14 @@
+using Arpg.Game.GameObjects;
 using Arpg.Game.Gom;
 
 namespace Arpg.Game.Rooms;
 
 public class Gameplay : Room
 {
-  public override void Initialize()
+  public Gameplay() : base()
   {
-    base.Initialize();
-    Game.ActiveRoom.Add(new Player(), [GameObjectGroup.Player]);
+    Add(new Player(), [GameObjectGroup.Player]);
+    Add(new Chest() { Position = new Vector2(100, 100) }, [GameObjectGroup.Obstacle]);
   }
 
 

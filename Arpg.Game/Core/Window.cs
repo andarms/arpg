@@ -1,6 +1,6 @@
 using Arpg.Game.Assets;
 
-namespace Arpg.Game;
+namespace Arpg.Game.Core;
 
 public class Window
 {
@@ -27,7 +27,10 @@ public class Window
       float dt = GetFrameTime();
       Game.Update(dt);
       BeginDrawing();
+      BeginMode2D(Game.Viewport.Camera);
       Game.Draw();
+      EndMode2D();
+      // Game.DrawUI();
       EndDrawing();
     }
   }

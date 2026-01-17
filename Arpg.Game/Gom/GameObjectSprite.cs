@@ -1,5 +1,3 @@
-using Arpg.Game.Assets;
-
 namespace Arpg.Game.Gom;
 
 public class GameObjectSprite
@@ -26,13 +24,5 @@ public class GameObjectSprite
       Rotation,
       Tint
     );
-  }
-}
-
-public class Player : GameObject
-{
-  public Player() : base()
-  {
-    Sprite = new() { Texture = AssetsManager.Textures["TinyDungeon"], Source = new Rectangle(16, 112, 16, 16) };
   }
 }
