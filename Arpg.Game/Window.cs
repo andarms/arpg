@@ -1,18 +1,22 @@
+using Arpg.Game.Assets;
+
 namespace Arpg.Game;
 
 public class Window
 {
-  public void Initialize()
+  public static void Initialize()
   {
     InitWindow(Settings.WindowWidth, Settings.WindowHeight, "ARPG Game");
     SetTargetFPS(60);
+    AssetsManager.LoadAssets();
     Game.Initialize();
   }
 
-  public void Run()
+  public static void Run()
   {
     Initialize();
     Loop();
+    AssetsManager.UnloadAssets();
     CloseWindow();
   }
 

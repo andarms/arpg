@@ -1,4 +1,4 @@
-namespace Arpg.Game;
+namespace Arpg.Game.Utils;
 
 public class RandomNumberGenerator
 {

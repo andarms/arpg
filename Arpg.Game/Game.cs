@@ -1,31 +1,31 @@
-using Arpg.Game.Gom;
-using Arpg.Game.Scenes;
+using Arpg.Game.Rooms;
+using Arpg.Game.Utils;
 
 namespace Arpg.Game;
 
 public static class Game
 {
-  public static ScenesController Scenes { get; } = new();
+  public static RoomController Rooms { get; } = new();
   public static RandomNumberGenerator Rng { get; } = new();
-  public static Scene CurrentScene => Scenes.CurrentScene ?? throw new InvalidOperationException("No current scene");
+  public static Room ActiveRoom => Rooms.ActiveRoom ?? throw new InvalidOperationException("No active room.");
 
   public static void Initialize()
   {
-    Scenes.Register(new GameplayScene());
-    Scenes.SwitchTo<GameplayScene>();
+    Rooms.Register(new Gameplay());
+    Rooms.SwitchTo<Gameplay>();
   }
 
   public static void Update(float dt)
   {
-    Scenes.CurrentScene?.Update(dt);
+    Rooms.ActiveRoom?.Update(dt);
   }
   public static void Draw()
   {
-    Scenes.CurrentScene?.Draw();
+    Rooms.ActiveRoom?.Draw();
   }
 
   public static void Terminate()
   {
-    Scenes.CurrentScene?.Terminate();
+    Rooms.ActiveRoom?.Terminate();
   }
 }

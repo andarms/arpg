@@ -1,9 +1,8 @@
 using Arpg.Game.Gom;
 
-namespace Arpg.Game.Scenes;
+namespace Arpg.Game.Rooms;
 
-
-public class Scene
+public class Room
 {
   public Color BackgroundColor { get; set; } = Color.Black;
 
