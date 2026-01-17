@@ -2,7 +2,7 @@ namespace Arpg.Game.Gom;
 
 public interface IReadonlyGameObject
 {
-  Vector2 Position { get; }
+  Vector2 Position { get; set; }
   IReadOnlyList<GameObjectComponent> Components { get; }
   public GameObjectStateMachine States { get; }
 }

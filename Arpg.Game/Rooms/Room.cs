@@ -25,7 +25,8 @@ public class Room
   public virtual void Draw()
   {
     ClearBackground(BackgroundColor);
-    objects.ForEach(go => go.Draw());
+    var sortedObjects = objects.OrderBy(go => go.Position.Y).ToList();
+    sortedObjects.ForEach(go => go.Draw());
   }
 
   public virtual void Terminate()
