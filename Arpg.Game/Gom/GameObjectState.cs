@@ -9,4 +9,17 @@ public class GameObjectState
   {
     this.owner = owner;
   }
+
+  public virtual void Enter()
+  {
+  }
+
+  public virtual void Update(float dt)
+  {
+  }
+
+  public virtual void Exit()
+  {
+  }
+
 }

@@ -14,21 +14,13 @@ public class Player : GameObject
       Anchor = new Vector2(8, 16)
     };
     components.Add(new CameraFollowComponent());
-    components.Add(new PlayerInput());
+
+    States.Register(new PlayerMoving());
+    States.SetInitial<PlayerMoving>();
   }
 }
 
-
-
-public class CameraFollowComponent : GameObjectComponent
-{
-  public override void Update(float dt)
-  {
-    Game.Viewport.UpdateTarget(Owner.Position);
-  }
-}
-
-public class PlayerInput : GameObjectComponent
+public class PlayerMoving : GameObjectState
 {
   private const float Speed = 100f;
 
@@ -45,5 +37,13 @@ public class PlayerInput : GameObjectComponent
       input = Vector2.Normalize(input);
       Owner.Position += input * Speed * dt;
     }
+  }
+}
+
+public class CameraFollowComponent : GameObjectComponent
+{
+  public override void Update(float dt)
+  {
+    Game.Viewport.UpdateTarget(Owner.Position);
   }
 }

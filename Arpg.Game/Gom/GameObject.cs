@@ -2,7 +2,7 @@ namespace Arpg.Game.Gom;
 
 public interface IReadonlyGameObject
 {
-  Vector2 Position { get; set; }
+  Vector2 Position { get; }
   IReadOnlyList<GameObjectComponent> Components { get; }
   public GameObjectStateMachine States { get; }
 }
@@ -20,13 +20,13 @@ public abstract class GameObject : IReadonlyGameObject
 
   public virtual void Initialize()
   {
-    // States.Initialize(this);
+    States.Attach(this);
     components.ForEach(c => c.Attach(this));
   }
 
   public virtual void Update(float dt)
   {
-    // States.Update(this, dt);
+    States.ActiveState?.Update(dt);
     components.ForEach(c => c.Update(dt));
   }
 
@@ -35,15 +35,10 @@ public abstract class GameObject : IReadonlyGameObject
     Sprite?.Draw(Position);
   }
 
+  public virtual void Debug()
+  {
+    DrawCircleV(Position, 2, Color.Green);
+  }
+
   public virtual void Terminate() { }
 }
-
-
-public class UIGameObject : GameObject
-{
-  public override void Draw()
-  {
-  }
-}
-
-

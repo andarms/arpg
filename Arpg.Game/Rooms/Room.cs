@@ -25,8 +25,15 @@ public class Room
   public virtual void Draw()
   {
     ClearBackground(BackgroundColor);
-    var sortedObjects = objects.OrderBy(go => go.Position.Y).ToList();
-    sortedObjects.ForEach(go => go.Draw());
+    IEnumerable<GameObject> sortedObjects = objects.OrderBy(go => go.Position.Y);
+    foreach (GameObject go in sortedObjects)
+    {
+      go.Draw();
+      if (Game.DebugMode)
+      {
+        go.Debug();
+      }
+    }
   }
 
   public virtual void Terminate()

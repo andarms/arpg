@@ -12,6 +12,8 @@ public static class Game
   public static Viewport Viewport { get; } = new();
   public static Vector2 Limits => new(5000, 3000);
 
+  public static bool DebugMode { get; set; } = false;
+
   public static void Initialize()
   {
     Rooms.Register<Gameplay>(new Gameplay());
