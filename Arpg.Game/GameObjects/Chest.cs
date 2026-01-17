@@ -7,6 +7,11 @@ public class Chest : GameObject
 {
   public Chest() : base()
   {
-    Sprite = new() { Texture = AssetsManager.Textures["TinyDungeon"], Source = new Rectangle(96, 112, 16, 16) };
+    Sprite = new()
+    {
+      Texture = AssetsManager.Textures["TinyDungeon"],
+      Source = new Rectangle(96, 112, 16, 16),
+      Anchor = new Vector2(8, 16)
+    };
   }
 }

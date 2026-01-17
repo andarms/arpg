@@ -3,7 +3,7 @@ namespace Arpg.Game.Gom;
 public class GameObjectSprite
 {
   public Texture2D Texture { get; set; }
-  public Vector2 Origin { get; set; } = Vector2.Zero;
+  public Vector2 Anchor { get; set; } = Vector2.Zero;
   public float Rotation { get; set; }
   public Color Tint { get; set; } = Color.White;
   public float Scale { get; set; } = 1.0f;
@@ -20,7 +20,7 @@ public class GameObjectSprite
         Source.Width * Scale,
         Source.Height * Scale
       ),
-      Origin,
+      Anchor,
       Rotation,
       Tint
     );

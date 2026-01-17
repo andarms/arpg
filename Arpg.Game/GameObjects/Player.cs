@@ -7,7 +7,12 @@ public class Player : GameObject
 {
   public Player() : base()
   {
-    Sprite = new() { Texture = AssetsManager.Textures["TinyDungeon"], Source = new Rectangle(16, 112, 16, 16) };
+    Sprite = new()
+    {
+      Texture = AssetsManager.Textures["TinyDungeon"],
+      Source = new Rectangle(16, 112, 16, 16),
+      Anchor = new Vector2(8, 16)
+    };
     components.Add(new CameraFollowComponent());
     components.Add(new PlayerInput());
   }
