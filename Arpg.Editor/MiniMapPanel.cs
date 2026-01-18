@@ -1,3 +1,5 @@
+namespace Arpg.Editor;
+
 public class MiniMapPanel
 {
   Vector2 Position = new(GetScreenWidth() - 432 - Settings.Padding, Settings.Padding);

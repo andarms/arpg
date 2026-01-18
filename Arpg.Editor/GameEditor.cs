@@ -1,5 +1,13 @@
 using Arpg.Editor;
 
+namespace Arpg.Editor;
+
+public static class GameEditorViewModel
+{
+  public static int SelectedLayer { get; set; } = 0;
+  public static int SelectedTool { get; set; } = 0;
+}
+
 public class GameEditor
 {
   TilesetPanel tileset;
@@ -16,6 +24,8 @@ public class GameEditor
   public void Update()
   {
     tileset.Update();
+    layersToolbar.Update();
+    toolToolbar.Update();
   }
 
   public void Draw()

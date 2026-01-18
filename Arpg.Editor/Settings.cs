@@ -1,3 +1,5 @@
+namespace Arpg.Editor;
+
 public static class Settings
 {
   public static string TilesetPath = "C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png";
