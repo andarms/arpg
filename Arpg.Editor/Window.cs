@@ -2,14 +2,14 @@ namespace Arpg.Editor;
 
 public static class Window
 {
-  static TilesetPanel tileSet;
-
+  static GameEditor editor;
 
   public static void Initialize()
   {
     InitWindow(1280, 720, "Editor");
     SetTargetFPS(60);
-    tileSet = new TilesetPanel("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png");
+    editor = new GameEditor();
+
   }
 
   public static void Run()
@@ -31,14 +31,14 @@ public static class Window
 
   private static void Update()
   {
-    tileSet.Update();
+    editor.Update();
   }
 
   private static void Draw()
   {
     ClearBackground(Color.Black);
     BeginDrawing();
-    tileSet.Draw();
+    editor.Draw();
     EndDrawing();
   }
 }
