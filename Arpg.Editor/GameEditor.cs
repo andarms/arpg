@@ -19,12 +19,12 @@ public static class GameEditorViewModel
 
 public class GameEditor
 {
-  TilesetPanel tileset = new();
-  MapPanel mapPanel = new();
-  MiniMapPanel miniMapPanel = new();
+  readonly TilesetPanel tileset = new();
+  readonly MapPanel mapPanel = new();
+  readonly MiniMapPanel miniMapPanel = new();
 
-  LayersToolbar layersToolbar = new();
-  ToolToolbar toolToolbar = new();
+  readonly LayersToolbar layersToolbar = new();
+  readonly ToolToolbar toolToolbar = new();
 
   public GameEditor()
   {
@@ -40,6 +40,7 @@ public class GameEditor
     tileset.Update();
     layersToolbar.Update();
     toolToolbar.Update();
+    mapPanel.Update();
   }
 
   public void Draw()
