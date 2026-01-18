@@ -64,7 +64,7 @@ public static class AssetsManager
       var lines = File.ReadAllLines(filePath);
       foreach (var line in lines)
       {
-        var tileIndices = line.Split(',').Select(s => int.Parse(s.Trim()));
+        var tileIndices = line.Split(' ').Select(s => int.Parse(s.Trim()));
         tiles.AddRange(tileIndices);
       }
     }
