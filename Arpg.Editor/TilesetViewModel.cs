@@ -1,6 +1,6 @@
 namespace Arpg.Editor;
 
-class TilesetViewModel
+public class TilesetViewModel
 {
   public Texture2D Texture;
   public List<Rectangle> Tiles = [];

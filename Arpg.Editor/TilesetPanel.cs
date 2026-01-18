@@ -1,8 +1,8 @@
 namespace Arpg.Editor;
 
-public class TilesetPanel(string path)
+public class TilesetPanel
 {
-  readonly TilesetViewModel tileset = new(path);
+
   public Vector2 Position = new(0, GetScreenHeight() - 214 - Settings.Padding);
 
   const int spacing = 2;
@@ -11,8 +11,7 @@ public class TilesetPanel(string path)
 
   private int currentPage = 0;
 
-  public IEnumerable<Rectangle> TilesOnPage => tileset.Tiles.Skip(currentPage * TILES_PER_PAGE).Take(TILES_PER_PAGE);
-
+  public IEnumerable<Rectangle> TilesOnPage => GameEditorViewModel.Tileset.Tiles.Skip(currentPage * TILES_PER_PAGE).Take(TILES_PER_PAGE);
   public void Update()
   {
     if (IsMouseButtonPressed(MouseButton.Left))
@@ -26,7 +25,7 @@ public class TilesetPanel(string path)
         Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
         if (CheckCollisionPointRec(mousePosition, destination))
         {
-          tileset.SelectedTileIndex = i;
+          GameEditorViewModel.Tileset.SelectedTileIndex = i;
           break;
         }
       }
@@ -41,17 +40,17 @@ public class TilesetPanel(string path)
       int y = i / 25;
       Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
       Rectangle destination = new Rectangle(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
-      DrawTexturePro(tileset.Texture, TilesOnPage.ElementAt(i), destination, Vector2.Zero, 0.0f, Color.White);
+      DrawTexturePro(GameEditorViewModel.Tileset.Texture, TilesOnPage.ElementAt(i), destination, Vector2.Zero, 0.0f, Color.White);
     }
 
-    if (tileset.SelectedTileIndex != -1)
+    if (GameEditorViewModel.Tileset.SelectedTileIndex != -1)
     {
-      int x = tileset.SelectedTileIndex % 25;
-      int y = tileset.SelectedTileIndex / 25;
+      int x = GameEditorViewModel.Tileset.SelectedTileIndex % 25;
+      int y = GameEditorViewModel.Tileset.SelectedTileIndex / 25;
       Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
       Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
       DrawRectangleLinesEx(destination, 3, Color.Red);
-      DrawTexturePro(tileset.Texture, TilesOnPage.ElementAt(tileset.SelectedTileIndex), new Rectangle(Position.X + Settings.Padding, Position.Y - 66, Settings.TileSize * 4, Settings.TileSize * 4), Vector2.Zero, 0.0f, Color.White);
+      DrawTexturePro(GameEditorViewModel.Tileset.Texture, TilesOnPage.ElementAt(GameEditorViewModel.Tileset.SelectedTileIndex), new Rectangle(Position.X + Settings.Padding, Position.Y - 66, Settings.TileSize * 4, Settings.TileSize * 4), Vector2.Zero, 0.0f, Color.White);
     }
   }
 }

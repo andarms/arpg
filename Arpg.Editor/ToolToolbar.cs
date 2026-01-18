@@ -1,14 +1,24 @@
 namespace Arpg.Editor;
 
+
+public enum Tools
+{
+  Pencil,
+  Eraser,
+  Fill,
+  FillArea
+}
+
 public class ToolToolbar
 {
-  Vector2 Position = new Vector2(GetScreenWidth() - Settings.Padding - MiniMapPanel.Size.X, Settings.Padding * 3 + MiniMapPanel.Size.Y + LayersToolbar.Size.Y);
-  public static Vector2 Size = new Vector2(240, 32);
+  Vector2 Position = new(GetScreenWidth() - Settings.Padding - MiniMapPanel.Size.X, Settings.Padding * 3 + MiniMapPanel.Size.Y + LayersToolbar.Size.Y);
+  public static Vector2 Size = new(240, 32);
   Rectangle Button1;
   Rectangle Button2;
   Rectangle Button3;
+  Rectangle Button4;
 
-  Rectangle[] buttons = [];
+  readonly Rectangle[] buttons = [];
 
   readonly KeyboardKey[] toolShortcuts =
   [
@@ -23,11 +33,13 @@ public class ToolToolbar
     Button1 = new(Position.X, Position.Y, 32, 32);
     Button2 = new(Position.X + 40, Position.Y, 32, 32);
     Button3 = new(Position.X + 80, Position.Y, 32, 32);
+    Button4 = new(Position.X + 120, Position.Y, 32, 32);
 
     buttons = [
         Button1,
         Button2,
-        Button3
+        Button3,
+        Button4
     ];
   }
 
@@ -59,6 +71,17 @@ public class ToolToolbar
     {
       GameEditorViewModel.SelectedTool = 2;
     }
+
+    if (IsKeyPressed(KeyboardKey.F))
+    {
+      if (GameEditorViewModel.Tilemap == null) return;
+      if (GameEditorViewModel.Tileset == null || GameEditorViewModel.Tileset.SelectedTileIndex == -1) return;
+
+      GameEditorViewModel.Tilemap.FillLayer(
+        GameEditorViewModel.SelectedLayer,
+        GameEditorViewModel.Tileset.SelectedTileIndex
+      );
+    }
   }
 
   public void Draw()
@@ -76,6 +99,9 @@ public class ToolToolbar
 
     Rectangle source3 = new(144, 112, 16, 16);
     DrawTexturePro(Settings.CursorTexture, source3, Button3, Vector2.Zero, 0.0f, GetButtonColor(2));
+
+    Rectangle source4 = new(64, 16, 16, 16);
+    DrawTexturePro(Settings.CursorTexture, source4, Button4, Vector2.Zero, 0.0f, GetButtonColor(3));
   }
 
   public Color GetButtonColor(int tool)

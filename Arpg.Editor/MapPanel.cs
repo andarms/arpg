@@ -1,12 +1,17 @@
 
 namespace Arpg.Editor;
 
+
 public class MapPanel
 {
   public Vector2 Position = new(Settings.Padding, Settings.Padding);
 
-  int cols = 25;
-  int rows = 12;
+  const int cols = 25;
+  const int rows = 12;
+
+  public MapPanel()
+  {
+  }
 
 
   void DrawGrid()
@@ -24,6 +29,7 @@ public class MapPanel
 
   public void Draw()
   {
+    GameEditorViewModel.Tilemap?.Draw();
     DrawGrid();
   }
 }

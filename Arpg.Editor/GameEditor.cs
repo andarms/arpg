@@ -6,19 +6,33 @@ public static class GameEditorViewModel
 {
   public static int SelectedLayer { get; set; } = 0;
   public static int SelectedTool { get; set; } = 0;
+  static TilesetViewModel? tileset;
+  public static TilesetViewModel Tileset => tileset ?? throw new Exception("Tileset not initialized");
+  public static TilemapViewModel? Tilemap { get; set; }
+
+  public static void CreateTilemap(int width, int height)
+  {
+    Tilemap = new TilemapViewModel(width, height);
+    tileset = new TilesetViewModel("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png");
+  }
 }
 
 public class GameEditor
 {
-  TilesetPanel tileset;
+  TilesetPanel tileset = new();
   MapPanel mapPanel = new();
   MiniMapPanel miniMapPanel = new();
 
   LayersToolbar layersToolbar = new();
   ToolToolbar toolToolbar = new();
+
   public GameEditor()
   {
-    tileset = new TilesetPanel("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png");
+    GameEditorViewModel.CreateTilemap(25, 12);
+    GameEditorViewModel.SelectedLayer = 0;
+    GameEditorViewModel.SelectedTool = 0;
+    GameEditorViewModel.Tilemap?.SetTile(GameEditorViewModel.SelectedLayer, 0, 0, 1);
+    GameEditorViewModel.Tilemap?.SetTile(GameEditorViewModel.SelectedLayer, 1, 0, 2);
   }
 
   public void Update()
