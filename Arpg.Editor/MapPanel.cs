@@ -51,6 +51,15 @@ public class MapPanel
     {
       showGrid = !showGrid;
     }
+
+    if (IsKeyPressed(KeyboardKey.S))
+    {
+      GameEditorViewModel.Tilemap?.Save();
+    }
+    if (IsKeyPressed(KeyboardKey.Q))
+    {
+      GameEditorViewModel.Tilemap?.Load("map.data");
+    }
   }
 
 

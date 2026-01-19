@@ -1,5 +1,3 @@
-using Arpg.Editor;
-
 namespace Arpg.Editor;
 
 public static class GameEditorViewModel
@@ -31,8 +29,6 @@ public class GameEditor
     GameEditorViewModel.CreateTilemap(25, 12);
     GameEditorViewModel.SelectedLayer = 0;
     GameEditorViewModel.SelectedTool = 0;
-    GameEditorViewModel.Tilemap?.SetTile(GameEditorViewModel.SelectedLayer, 0, 0, 1);
-    GameEditorViewModel.Tilemap?.SetTile(GameEditorViewModel.SelectedLayer, 1, 0, 2);
   }
 
   public void Update()

@@ -1,4 +1,6 @@
 
+using System.Text;
+
 namespace Arpg.Editor;
 
 public class TilemapViewModel
@@ -7,9 +9,11 @@ public class TilemapViewModel
   private const int LayerCount = 3;
 
   private readonly List<int>[] layers;
-  private readonly int width;
-  private readonly int height;
+  private int width;
+  private int height;
   private readonly int totalTiles;
+
+  const string AssetsPath = "C:/Users/andar/apps/hamaka_studio/arpg/Arpg.Game/Assets/Tilemaps";
 
   public TilemapViewModel(int width, int height)
   {
@@ -69,6 +73,97 @@ public class TilemapViewModel
           {
             DrawTile(tileIndex, destination);
           }
+        }
+      }
+    }
+  }
+
+  public void Save()
+  {
+
+    string path = Path.Combine(AssetsPath, "map.data");
+    StringBuilder sb = new();
+    sb.AppendLine("[Tilemap]");
+    sb.AppendLine($"Width={width},Height={height}");
+    for (int layer = 0; layer < LayerCount; layer++)
+    {
+      sb.AppendLine($"Layer={layer}");
+      for (int y = 0; y < height; y++)
+      {
+        for (int x = 0; x < width; x++)
+        {
+          int index = GetTileIndex(x, y);
+          int tileIndex = layers[layer][index];
+          sb.Append(tileIndex);
+          if (x < width - 1)
+          {
+            sb.Append(' ');
+          }
+        }
+        sb.AppendLine();
+      }
+    }
+    File.WriteAllText(path, sb.ToString());
+  }
+
+  public void Load(string filePath)
+  {
+    try
+    {
+      string path = Path.Combine(AssetsPath, filePath);
+      string[] lines = File.ReadAllLines(path);
+      int currentLayer = -1;
+      int currentRowInLayer = 0;
+      for (int i = 0; i < lines.Length; i++)
+      {
+        string line = lines[i].Trim();
+        if (i == 1)
+        {
+          SetTileMapMetadata(line);
+          continue;
+        }
+        if (line.StartsWith("Layer"))
+        {
+          currentLayer = int.Parse(line.Split('=')[1]);
+          currentRowInLayer = 0; // Reset row counter for new layer
+          continue;
+        }
+        if (currentLayer >= 0 && IsValidLayer(currentLayer))
+        {
+          string[] tileIndices = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+          if (tileIndices.Length > 0) // Only process non-empty lines
+          {
+            for (int x = 0; x < tileIndices.Length; x++)
+            {
+              int tileIndex = int.Parse(tileIndices[x]);
+              SetTile(currentLayer, x, currentRowInLayer, tileIndex);
+            }
+            currentRowInLayer++; // Increment row counter after processing each row
+          }
+        }
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Error loading tilemap: {ex.Message}");
+    }
+  }
+
+  private void SetTileMapMetadata(string line)
+  {
+    string[] parts = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
+    foreach (var part in parts)
+    {
+      var keyValue = part.Split('=', StringSplitOptions.RemoveEmptyEntries);
+      if (keyValue.Length == 2)
+      {
+        if (keyValue[0] == "Width")
+        {
+          width = int.Parse(keyValue[1]);
+        }
+        else if (keyValue[0] == "Height")
+        {
+          height = int.Parse(keyValue[1]);
         }
       }
     }
