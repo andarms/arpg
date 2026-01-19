@@ -13,6 +13,8 @@ public class TilemapViewModel
   private int height;
   private readonly int totalTiles;
 
+  Color unselectedTint = new(255, 255, 255, 100);
+
   const string AssetsPath = "C:/Users/andar/apps/hamaka_studio/arpg/Arpg.Game/Assets/Tilemaps";
 
   public TilemapViewModel(int width, int height)
@@ -68,14 +70,21 @@ public class TilemapViewModel
 
         for (int layer = 0; layer < LayerCount; layer++)
         {
+          Color tint = IsLayerHighlighted(layer) ? Color.White : unselectedTint;
           int tileIndex = layers[layer][index];
           if (tileIndex >= 0)
           {
-            DrawTile(tileIndex, destination);
+            DrawTile(tileIndex, destination, tint);
           }
         }
       }
     }
+  }
+
+  private static bool IsLayerHighlighted(int layer)
+  {
+    if (GameEditorViewModel.SelectedLayer < 0 || GameEditorViewModel.SelectedLayer > 2) return true;
+    return GameEditorViewModel.SelectedLayer == layer;
   }
 
   public void Save()
@@ -185,9 +194,9 @@ public class TilemapViewModel
     );
   }
 
-  private static void DrawTile(int tileIndex, Rectangle destination)
+  private static void DrawTile(int tileIndex, Rectangle destination, Color tint)
   {
     Rectangle source = GameEditorViewModel.Tileset.Tiles.ElementAt(tileIndex);
-    DrawTexturePro(Settings.TileSet, source, destination, Vector2.Zero, 0f, Color.White);
+    DrawTexturePro(Settings.TileSet, source, destination, Vector2.Zero, 0f, tint);
   }
 }

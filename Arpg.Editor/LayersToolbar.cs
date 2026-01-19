@@ -73,6 +73,7 @@ public class LayersToolbar
         if (CheckCollisionPointRec(mousePos, buttons[i]))
         {
           GameEditorViewModel.SelectedLayer = i;
+          GameEditorViewModel.ShowGrid = true;
           break;
         }
       }

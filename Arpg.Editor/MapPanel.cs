@@ -10,26 +10,10 @@ public class MapPanel
   const int rows = 12;
 
   Rectangle bounds;
-  bool showGrid = true;
 
   public MapPanel()
   {
     bounds = new Rectangle(Position.X, Position.Y, cols * Settings.ScaledTileSize, rows * Settings.ScaledTileSize);
-  }
-
-
-  void DrawGrid()
-  {
-    if (!showGrid) return;
-
-    for (int x = 0; x <= cols; x++)
-    {
-      DrawLineV(new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y), new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y + rows * Settings.ScaledTileSize), Color.Gray);
-    }
-    for (int y = 0; y <= rows; y++)
-    {
-      DrawLineV(new Vector2(Position.X, Position.Y + y * Settings.ScaledTileSize), new Vector2(Position.X + cols * Settings.ScaledTileSize, Position.Y + y * Settings.ScaledTileSize), Color.Gray);
-    }
   }
 
 
@@ -49,7 +33,17 @@ public class MapPanel
 
     if (IsKeyPressed(KeyboardKey.F1))
     {
-      showGrid = !showGrid;
+      if (GameEditorViewModel.ShowGrid)
+      {
+        // When the selected layer is -1, we can’t place tiles. It started as a bug, but I like it so now it’s a feature.
+        GameEditorViewModel.SelectedLayer = -1;
+        GameEditorViewModel.ShowGrid = false;
+      }
+      else
+      {
+        GameEditorViewModel.ShowGrid = true;
+        GameEditorViewModel.SelectedLayer = 0;
+      }
     }
 
     if (IsKeyPressed(KeyboardKey.S))
@@ -81,5 +75,19 @@ public class MapPanel
   {
     GameEditorViewModel.Tilemap?.Draw();
     DrawGrid();
+  }
+
+  void DrawGrid()
+  {
+    if (!GameEditorViewModel.ShowGrid) return;
+
+    for (int x = 0; x <= cols; x++)
+    {
+      DrawLineV(new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y), new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y + rows * Settings.ScaledTileSize), Color.Gray);
+    }
+    for (int y = 0; y <= rows; y++)
+    {
+      DrawLineV(new Vector2(Position.X, Position.Y + y * Settings.ScaledTileSize), new Vector2(Position.X + cols * Settings.ScaledTileSize, Position.Y + y * Settings.ScaledTileSize), Color.Gray);
+    }
   }
 }
