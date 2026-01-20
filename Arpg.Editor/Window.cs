@@ -1,3 +1,5 @@
+using rlImGui_cs;
+using ImGuiNET;
 namespace Arpg.Editor;
 
 public static class Window
@@ -9,6 +11,7 @@ public static class Window
     InitWindow(1280, 720, "Editor");
     SetTargetFPS(60);
     editor = new GameEditor();
+    rlImGui.Setup(true);
 
   }
 
@@ -27,6 +30,7 @@ public static class Window
       Update();
       Draw();
     }
+    rlImGui.Shutdown();
   }
 
   private static void Update()
@@ -38,7 +42,10 @@ public static class Window
   {
     ClearBackground(Color.Black);
     BeginDrawing();
+    rlImGui.Begin();
     editor.Draw();
+
+    rlImGui.End();
     EndDrawing();
   }
 }
