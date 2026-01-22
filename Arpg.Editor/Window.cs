@@ -43,8 +43,47 @@ public static class Window
     ClearBackground(Color.Black);
     BeginDrawing();
     rlImGui.Begin();
-    editor.Draw();
 
+    if (ImGui.BeginMainMenuBar())
+    {
+      if (ImGui.BeginMenu("File"))
+      {
+        if (ImGui.MenuItem("New"))
+        {
+          // Handle new file action
+        }
+        if (ImGui.MenuItem("Open"))
+        {
+          // Handle open file action
+        }
+        if (ImGui.MenuItem("Save"))
+        {
+          // Handle save file action
+        }
+        ImGui.Separator();
+        if (ImGui.MenuItem("Exit"))
+        {
+          CloseWindow();
+        }
+        ImGui.EndMenu();
+      }
+
+      if (ImGui.BeginMenu("Edit"))
+      {
+        if (ImGui.MenuItem("Undo"))
+        {
+          // Handle undo action
+        }
+        if (ImGui.MenuItem("Redo"))
+        {
+          // Handle redo action
+        }
+        ImGui.EndMenu();
+      }
+
+      ImGui.EndMainMenuBar();
+    }
+    editor.Draw();
     rlImGui.End();
     EndDrawing();
   }
