@@ -19,4 +19,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Arpg.Engine\Arpg.Engine.csproj" />
+  </ItemGroup>
+
 </Project>

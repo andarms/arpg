@@ -17,4 +17,8 @@
     <PackageReference Include="Raylib-cs" Version="7.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Arpg.Engine\Arpg.Engine.csproj" />
+  </ItemGroup>
+
 </Project>

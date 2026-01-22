@@ -1,4 +1,4 @@
-namespace Arpg.Game.Assets;
+namespace Arpg.Engine.Assets;
 
 public static class AssetsManager
 {
@@ -75,7 +75,7 @@ public static class AssetsManager
     return tiles;
   }
 
-  internal static void UnloadAssets()
+  public static void UnloadAssets()
   {
     // Unload all loaded textures
     foreach (var texture in Textures.Values)

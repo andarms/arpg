@@ -1,6 +1,4 @@
-
 namespace Arpg.Editor;
-
 
 public class MapPanel
 {
@@ -16,9 +14,10 @@ public class MapPanel
     bounds = new Rectangle(Position.X, Position.Y, cols * Settings.ScaledTileSize, rows * Settings.ScaledTileSize);
   }
 
-
   public void Update()
   {
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+
     if (IsMouseButtonDown(MouseButton.Left))
     {
       var (x, y) = GetTileCoordinatesAtMouse();
@@ -35,7 +34,7 @@ public class MapPanel
     {
       if (GameEditorViewModel.ShowGrid)
       {
-        // When the selected layer is -1, we can’t place tiles. It started as a bug, but I like it so now it’s a feature.
+        // When the selected layer is -1, we can't place tiles. It started as a bug, but I like it so now it's a feature.
         GameEditorViewModel.SelectedLayer = -1;
         GameEditorViewModel.ShowGrid = false;
       }
@@ -50,12 +49,12 @@ public class MapPanel
     {
       GameEditorViewModel.Tilemap?.Save();
     }
+
     if (IsKeyPressed(KeyboardKey.Q))
     {
       GameEditorViewModel.Tilemap?.Load("map.data");
     }
   }
-
 
   public (int, int) GetTileCoordinatesAtMouse()
   {
@@ -66,14 +65,21 @@ public class MapPanel
       int y = (int)((mousePos.Y - Position.Y) / Settings.ScaledTileSize);
       return (x, y);
     }
-    // viewmodel will handle this -1 case when out of bounds
+    // Return -1 when out of bounds
     return (-1, -1);
   }
 
-
   public void Draw()
   {
-    GameEditorViewModel.Tilemap?.Draw();
+    if (GameEditorViewModel.Tilemap?.IsLoaded ?? false)
+    {
+      // Calculate scale based on Settings.ScaledTileSize vs actual tile size
+      int tileSize = GameEditorViewModel.Tilemap.Data?.Tileset.TileWidth ?? 16;
+      int scale = Settings.ScaledTileSize / tileSize;
+
+      GameEditorViewModel.Tilemap.Draw(Position, scale);
+    }
+
     DrawGrid();
   }
 
@@ -83,11 +89,20 @@ public class MapPanel
 
     for (int x = 0; x <= cols; x++)
     {
-      DrawLineV(new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y), new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y + rows * Settings.ScaledTileSize), Color.Gray);
+      DrawLineV(
+        new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y),
+        new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y + rows * Settings.ScaledTileSize),
+        Color.Gray
+      );
     }
+
     for (int y = 0; y <= rows; y++)
     {
-      DrawLineV(new Vector2(Position.X, Position.Y + y * Settings.ScaledTileSize), new Vector2(Position.X + cols * Settings.ScaledTileSize, Position.Y + y * Settings.ScaledTileSize), Color.Gray);
+      DrawLineV(
+        new Vector2(Position.X, Position.Y + y * Settings.ScaledTileSize),
+        new Vector2(Position.X + cols * Settings.ScaledTileSize, Position.Y + y * Settings.ScaledTileSize),
+        Color.Gray
+      );
     }
   }
 }

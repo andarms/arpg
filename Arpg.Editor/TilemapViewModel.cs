@@ -1,202 +1,77 @@
 
-using System.Text;
+using Arpg.Engine.Tilemaps;
 
 namespace Arpg.Editor;
 
 public class TilemapViewModel
 {
-  private const int EmptyTile = -1;
-  private const int LayerCount = 3;
+  private TilemapData? tilemapData;
 
-  private readonly List<int>[] layers;
-  private int width;
-  private int height;
-  private readonly int totalTiles;
+  public TilemapData? Data => tilemapData;
+  public int Width => tilemapData?.Width ?? 0;
+  public int Height => tilemapData?.Height ?? 0;
+  public bool IsLoaded => tilemapData != null;
 
-  Color unselectedTint = new(255, 255, 255, 100);
-
-  const string AssetsPath = "C:/Users/andar/apps/hamaka_studio/arpg/Arpg.Game/Assets/Tilemaps";
-
-  public TilemapViewModel(int width, int height)
+  public void NewMap(int width, int height)
   {
-    this.width = width;
-    this.height = height;
-    totalTiles = width * height;
-
-    layers = new List<int>[LayerCount];
-    for (int i = 0; i < LayerCount; i++)
-    {
-      layers[i] = [.. new int[totalTiles]];
-      for (int j = 0; j < totalTiles; j++)
-      {
-        layers[i][j] = EmptyTile;
-      }
-    }
-  }
-
-  public void SetTile(int layer, int x, int y, int tileIndex)
-  {
-    if (IsValidLayer(layer) && IsValidPosition(x, y))
-    {
-      int index = GetTileIndex(x, y);
-      layers[layer][index] = tileIndex;
-    }
-  }
-
-  public void EraseTile(int layer, int x, int y)
-  {
-    SetTile(layer, x, y, EmptyTile);
-  }
-
-  public void FillLayer(int layer, int tileIndex)
-  {
-    if (IsValidLayer(layer))
-    {
-      for (int i = 0; i < totalTiles; i++)
-      {
-        layers[layer][i] = tileIndex;
-      }
-    }
-  }
-
-  public void Draw()
-  {
-    for (int y = 0; y < height; y++)
-    {
-      for (int x = 0; x < width; x++)
-      {
-        int index = GetTileIndex(x, y);
-        Rectangle destination = GetTileDestination(x, y);
-
-        for (int layer = 0; layer < LayerCount; layer++)
-        {
-          Color tint = IsLayerHighlighted(layer) ? Color.White : unselectedTint;
-          int tileIndex = layers[layer][index];
-          if (tileIndex >= 0)
-          {
-            DrawTile(tileIndex, destination, tint);
-          }
-        }
-      }
-    }
-  }
-
-  private static bool IsLayerHighlighted(int layer)
-  {
-    if (GameEditorViewModel.SelectedLayer < 0 || GameEditorViewModel.SelectedLayer > 2) return true;
-    return GameEditorViewModel.SelectedLayer == layer;
-  }
-
-  public void Save()
-  {
-
-    string path = Path.Combine(AssetsPath, "map.data");
-    StringBuilder sb = new();
-    sb.AppendLine("[Tilemap]");
-    sb.AppendLine($"Width={width},Height={height}");
-    for (int layer = 0; layer < LayerCount; layer++)
-    {
-      sb.AppendLine($"Layer={layer}");
-      for (int y = 0; y < height; y++)
-      {
-        for (int x = 0; x < width; x++)
-        {
-          int index = GetTileIndex(x, y);
-          int tileIndex = layers[layer][index];
-          sb.Append(tileIndex);
-          if (x < width - 1)
-          {
-            sb.Append(' ');
-          }
-        }
-        sb.AppendLine();
-      }
-    }
-    File.WriteAllText(path, sb.ToString());
+    tilemapData = TilemapService.CreateNew(width, height);
   }
 
   public void Load(string filePath)
   {
     try
     {
-      string path = Path.Combine(AssetsPath, filePath);
-      string[] lines = File.ReadAllLines(path);
-      int currentLayer = -1;
-      int currentRowInLayer = 0;
-      for (int i = 0; i < lines.Length; i++)
-      {
-        string line = lines[i].Trim();
-        if (i == 1)
-        {
-          SetTileMapMetadata(line);
-          continue;
-        }
-        if (line.StartsWith("Layer"))
-        {
-          currentLayer = int.Parse(line.Split('=')[1]);
-          currentRowInLayer = 0; // Reset row counter for new layer
-          continue;
-        }
-        if (currentLayer >= 0 && IsValidLayer(currentLayer))
-        {
-          string[] tileIndices = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-          if (tileIndices.Length > 0) // Only process non-empty lines
-          {
-            for (int x = 0; x < tileIndices.Length; x++)
-            {
-              int tileIndex = int.Parse(tileIndices[x]);
-              SetTile(currentLayer, x, currentRowInLayer, tileIndex);
-            }
-            currentRowInLayer++; // Increment row counter after processing each row
-          }
-        }
-      }
+      tilemapData = TilemapService.LoadFromFile(filePath);
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Error loading tilemap: {ex.Message}");
+      Console.WriteLine($"Failed to load tilemap: {ex.Message}");
+      // Could add error handling/notification to UI here
     }
   }
 
-  private void SetTileMapMetadata(string line)
+  public void Save(string filePath = "map.data")
   {
-    string[] parts = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
-    foreach (var part in parts)
+    if (tilemapData == null) return;
+
+    try
     {
-      var keyValue = part.Split('=', StringSplitOptions.RemoveEmptyEntries);
-      if (keyValue.Length == 2)
-      {
-        if (keyValue[0] == "Width")
-        {
-          width = int.Parse(keyValue[1]);
-        }
-        else if (keyValue[0] == "Height")
-        {
-          height = int.Parse(keyValue[1]);
-        }
-      }
+      TilemapService.SaveToFile(tilemapData, filePath);
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Failed to save tilemap: {ex.Message}");
+      // Could add error handling/notification to UI here
     }
   }
 
-  private static bool IsValidLayer(int layer) => layer >= 0 && layer < LayerCount;
-
-  private bool IsValidPosition(int x, int y) => x >= 0 && x < width && y >= 0 && y < height;
-
-  private int GetTileIndex(int x, int y) => y * width + x;
-
-  private static Rectangle GetTileDestination(int x, int y)
+  public void SetTile(int layerIndex, int x, int y, int tileIndex)
   {
-    return new(
-      Settings.Padding + x * Settings.ScaledTileSize,
-      Settings.Padding + y * Settings.ScaledTileSize,
-      Settings.ScaledTileSize,
-      Settings.ScaledTileSize
-    );
+    tilemapData?.SetTile(layerIndex, x, y, tileIndex);
   }
 
-  private static void DrawTile(int tileIndex, Rectangle destination, Color tint)
+  public int GetTile(int layerIndex, int x, int y)
   {
-    Rectangle source = GameEditorViewModel.Tileset.Tiles.ElementAt(tileIndex);
-    DrawTexturePro(Settings.TileSet, source, destination, Vector2.Zero, 0f, tint);
+    return tilemapData?.GetTile(layerIndex, x, y) ?? -1;
+  }
+
+  public void EraseTile(int layerIndex, int x, int y)
+  {
+    tilemapData?.EraseTile(layerIndex, x, y);
+  }
+
+  public void FillLayer(int layerIndex, int tileIndex)
+  {
+    tilemapData?.FillLayer(layerIndex, tileIndex);
+  }
+
+  public void ClearLayer(int layerIndex)
+  {
+    tilemapData?.ClearLayer(layerIndex);
+  }
+
+  public void Draw(Vector2 offset = default, int scale = 1)
+  {
+    tilemapData?.Draw(offset, scale);
   }
 }

@@ -1,3 +1,5 @@
+using Arpg.Engine.Assets;
+using Arpg.Engine.Tilemaps;
 using Arpg.Game.GameObjects;
 using Arpg.Game.Gom;
 
@@ -5,14 +7,17 @@ namespace Arpg.Game.Rooms;
 
 public class Gameplay : Room
 {
-  TilemapLayer backgroundLayer;
+  readonly TilemapLayer[] layers = new TilemapLayer[3];
+  TilemapData tilemapData;
+  Vector2 offset = new(0, 0);
 
   public Gameplay() : base()
   {
     Add(new Player() { Position = new Vector2(50, 50) }, [GameObjectGroup.Player]);
     Add(new Chest() { Position = new Vector2(100, 100) }, [GameObjectGroup.Obstacle]);
 
-    backgroundLayer = new(16, 16, "level-1", new Tileset(Assets.AssetsManager.Textures["TinyDungeon"]));
+    tilemapData = TilemapService.LoadFromFile("map.data");
+
   }
 
   public override void Update(float dt)
@@ -26,7 +31,7 @@ public class Gameplay : Room
 
   public override void Draw()
   {
-    backgroundLayer.Draw();
+    tilemapData.Draw(offset);
     base.Draw();
   }
 }

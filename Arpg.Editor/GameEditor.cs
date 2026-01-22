@@ -1,21 +1,5 @@
 namespace Arpg.Editor;
 
-public static class GameEditorViewModel
-{
-  public static int SelectedLayer { get; set; } = 0;
-  public static int SelectedTool { get; set; } = 0;
-  public static bool ShowGrid { get; set; } = true;
-  static TilesetViewModel? tileset;
-  public static TilesetViewModel Tileset => tileset ?? throw new Exception("Tileset not initialized");
-  public static TilemapViewModel? Tilemap { get; set; }
-
-  public static void CreateTilemap(int width, int height)
-  {
-    Tilemap = new TilemapViewModel(width, height);
-    tileset = new TilesetViewModel("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png");
-  }
-}
-
 public class GameEditor
 {
   readonly TilesetPanel tileset = new();

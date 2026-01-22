@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arpg.Game", "Arpg.Game\Arpg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arpg.Editor", "Arpg.Editor\Arpg.Editor.csproj", "{043993D7-290F-43D1-9A3A-358D3603F9EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arpg.Engine", "Arpg.Engine\Arpg.Engine.csproj", "{D8DD809B-9208-4258-B303-EA0D2C0509AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{043993D7-290F-43D1-9A3A-358D3603F9EC}.Release|x64.Build.0 = Release|Any CPU
 		{043993D7-290F-43D1-9A3A-358D3603F9EC}.Release|x86.ActiveCfg = Release|Any CPU
 		{043993D7-290F-43D1-9A3A-358D3603F9EC}.Release|x86.Build.0 = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|x64.Build.0 = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8DD809B-9208-4258-B303-EA0D2C0509AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

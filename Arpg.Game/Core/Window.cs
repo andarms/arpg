@@ -1,4 +1,4 @@
-using Arpg.Game.Assets;
+using Arpg.Engine.Assets;
 
 namespace Arpg.Game.Core;
 
@@ -32,6 +32,10 @@ public class Window
       Game.Draw();
       EndMode2D();
       // Game.DrawUI();
+      if (Game.DebugMode)
+      {
+        DrawFPS(10, 10);
+      }
       EndDrawing();
     }
   }
