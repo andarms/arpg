@@ -9,5 +9,4 @@ public static class Settings
   public const int Padding = 20;
   public static Font DefaultFont = LoadFont("Assets/Fonts/monogram-extended.ttf");
   public static Texture2D CursorTexture = LoadTexture("Assets/Textures/cursor.png");
-  public static Texture2D TileSet = LoadTexture(TilesetPath);
 }

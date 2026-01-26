@@ -52,7 +52,7 @@ public class MapPanel
 
     if (IsKeyPressed(KeyboardKey.Q))
     {
-      GameEditorViewModel.Tilemap?.Load("map.data");
+      GameEditorViewModel.LoadTilemap("map.data");
     }
   }
 

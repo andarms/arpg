@@ -12,9 +12,9 @@ public class TilemapViewModel
   public int Height => tilemapData?.Height ?? 0;
   public bool IsLoaded => tilemapData != null;
 
-  public void NewMap(int width, int height)
+  public void NewMap(int width, int height, string? tilesetPath = null)
   {
-    tilemapData = TilemapService.CreateNew(width, height);
+    tilemapData = TilemapService.CreateNew(width, height, tilesetPath);
   }
 
   public void Load(string filePath)

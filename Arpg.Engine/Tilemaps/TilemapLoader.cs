@@ -13,12 +13,14 @@ public class TilemapData
   public int TotalTiles => Width * Height;
   public TilemapLayer[] Layers { get; private set; } = new TilemapLayer[LayerCount];
   public Tileset Tileset { get; private set; }
+  public string TilesetPath { get; private set; } = string.Empty;
 
-  public TilemapData(int width, int height, Tileset tileset)
+  public TilemapData(int width, int height, Tileset tileset, string tilesetPath = "")
   {
     Width = width;
     Height = height;
     Tileset = tileset;
+    TilesetPath = tilesetPath;
     InitializeLayers();
   }
 
@@ -36,6 +38,7 @@ public class TilemapData
     string path = Path.Combine(assetsPath, filePath);
     StringBuilder sb = new();
     sb.AppendLine("[Tilemap]");
+    sb.AppendLine($"Tileset={TilesetPath}");
     sb.AppendLine($"Width={Width},Height={Height}");
 
     for (int layer = 0; layer < LayerCount; layer++)
@@ -60,26 +63,35 @@ public class TilemapData
     File.WriteAllText(path, sb.ToString());
   }
 
-  public static TilemapData Load(string filePath, string assetsPath, Tileset tileset)
+  public static TilemapData Load(string filePath, string assetsPath, string gameAssetsPath)
   {
     string path = Path.Combine(assetsPath, filePath);
     string[] lines = File.ReadAllLines(path);
 
     int width = 0, height = 0;
+    string tilesetPath = "";
     int currentLayer = -1;
     int currentRowInLayer = 0;
 
     // Parse metadata
     if (lines.Length > 1)
     {
-      string metadataLine = lines[1].Trim();
+      string tilesetLine = lines[1].Trim();
+      tilesetPath = ParseTilesetPath(tilesetLine);
+    }
+    if (lines.Length > 2)
+    {
+      string metadataLine = lines[2].Trim();
       (width, height) = ParseMetadata(metadataLine);
     }
 
-    TilemapData tilemapData = new(width, height, tileset);
+    // Load tileset from the specified path
+    string fullTilesetPath = Path.Combine(gameAssetsPath, tilesetPath);
+    Tileset tileset = new(LoadTexture(fullTilesetPath), 16, 16);
+    TilemapData tilemapData = new(width, height, tileset, tilesetPath);
 
     // Parse tile data
-    for (int i = 2; i < lines.Length; i++)
+    for (int i = 3; i < lines.Length; i++)
     {
       string line = lines[i].Trim();
 
@@ -106,6 +118,15 @@ public class TilemapData
     }
 
     return tilemapData;
+  }
+
+  private static string ParseTilesetPath(string line)
+  {
+    if (line.StartsWith("Tileset="))
+    {
+      return line.Substring("Tileset=".Length);
+    }
+    return "";
   }
 
   private static (int width, int height) ParseMetadata(string line)

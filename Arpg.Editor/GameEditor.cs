@@ -11,7 +11,7 @@ public class GameEditor
 
   public GameEditor()
   {
-    GameEditorViewModel.CreateTilemap(25, 12);
+    GameEditorViewModel.CreateTilemap(25, 12, "Textures/tileset.png");
     GameEditorViewModel.SelectedLayer = 0;
     GameEditorViewModel.SelectedTool = 0;
   }

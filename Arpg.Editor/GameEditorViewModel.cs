@@ -12,10 +12,24 @@ public static class GameEditorViewModel
 
   public static void CreateTilemap(int width, int height, string? tilesetPath = null)
   {
-    string actualTilesetPath = tilesetPath ?? "C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png";
+    string actualTilesetPath = tilesetPath ?? throw new Exception("Tileset path must be provided when creating a new tilemap");
+    string fullPath = Path.Combine("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets", actualTilesetPath);
 
     Tilemap = new TilemapViewModel();
-    tileset = new TilesetViewModel(actualTilesetPath);
-    Tilemap.NewMap(width, height);
+    tileset = new TilesetViewModel(fullPath);
+    Tilemap.NewMap(width, height, actualTilesetPath);
+  }
+
+  public static void LoadTilemap(string filePath)
+  {
+    Tilemap = new TilemapViewModel();
+    Tilemap.Load(filePath);
+
+    // Update tileset based on loaded map's tileset
+    if (Tilemap.Data?.TilesetPath is not null)
+    {
+      string fullTilesetPath = Path.Combine("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets", Tilemap.Data.TilesetPath);
+      tileset = new TilesetViewModel(fullTilesetPath);
+    }
   }
 }

@@ -6,10 +6,11 @@ public class TilesetPanel
   public Vector2 Position = new(0, GetScreenHeight() - 214 - Settings.Padding);
 
   const int spacing = 2;
+  const int panelTilesWide = 26;
 
-  const int TILES_PER_PAGE = 25 * 6;
+  const int TILES_PER_PAGE = panelTilesWide * 6;
 
-  private int currentPage = 0;
+  private readonly int currentPage = 0;
 
   public IEnumerable<Rectangle> TilesOnPage => GameEditorViewModel.Tileset.Tiles.Skip(currentPage * TILES_PER_PAGE).Take(TILES_PER_PAGE);
   public void Update()
@@ -19,8 +20,8 @@ public class TilesetPanel
       Vector2 mousePosition = GetMousePosition();
       for (int i = 0; i < TilesOnPage.Count(); i++)
       {
-        int x = i % 25;
-        int y = i / 25;
+        int x = i % panelTilesWide;
+        int y = i / panelTilesWide;
         Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
         Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
         if (CheckCollisionPointRec(mousePosition, destination))
@@ -36,8 +37,8 @@ public class TilesetPanel
   {
     for (int i = 0; i < TilesOnPage.Count(); i++)
     {
-      int x = i % 25;
-      int y = i / 25;
+      int x = i % panelTilesWide;
+      int y = i / panelTilesWide;
       Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
       Rectangle destination = new Rectangle(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
       DrawTexturePro(GameEditorViewModel.Tileset.Texture, TilesOnPage.ElementAt(i), destination, Vector2.Zero, 0.0f, Color.White);
@@ -45,8 +46,8 @@ public class TilesetPanel
 
     if (GameEditorViewModel.Tileset.SelectedTileIndex != -1)
     {
-      int x = GameEditorViewModel.Tileset.SelectedTileIndex % 25;
-      int y = GameEditorViewModel.Tileset.SelectedTileIndex / 25;
+      int x = GameEditorViewModel.Tileset.SelectedTileIndex % panelTilesWide;
+      int y = GameEditorViewModel.Tileset.SelectedTileIndex / panelTilesWide;
       Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
       Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
       DrawRectangleLinesEx(destination, 3, Color.Red);
