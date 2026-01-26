@@ -1,4 +1,3 @@
-using Arpg.Engine.Assets;
 using Arpg.Engine.Tilemaps;
 using Arpg.Game.GameObjects;
 using Arpg.Game.Gom;
@@ -14,7 +13,6 @@ public class Gameplay : Room
   public Gameplay() : base()
   {
     Add(new Player() { Position = new Vector2(50, 50) }, [GameObjectGroup.Player]);
-    Add(new Chest() { Position = new Vector2(100, 100) }, [GameObjectGroup.Obstacle]);
 
     tilemapData = TilemapService.LoadFromFile("map.data");
 

@@ -14,9 +14,7 @@ public abstract class GameObject : IReadonlyGameObject
   public GameObjectStateMachine States { get; } = new();
   public IReadOnlyList<GameObjectComponent> Components => components;
   protected readonly List<GameObjectComponent> components = [];
-
-  public GameObjectSprite? Sprite { get; set; }
-
+  Dictionary<Type, GameObjectComponent?> componentCache { get; } = [];
 
   public virtual void Initialize()
   {
@@ -32,13 +30,26 @@ public abstract class GameObject : IReadonlyGameObject
 
   public virtual void Draw()
   {
-    Sprite?.Draw(Position);
+    components.ForEach(c => c.Draw(Position));
   }
 
   public virtual void Debug()
   {
     DrawCircleV(Position, 2, Color.Green);
   }
+
+  public T? Get<T>() where T : GameObjectComponent
+  {
+    var type = typeof(T);
+    if (!componentCache.TryGetValue(type, out var cached))
+    {
+      cached = components.FirstOrDefault(c => c is T);
+      componentCache[type] = cached;
+    }
+    return cached as T;
+  }
+
+
 
   public virtual void Terminate() { }
 }

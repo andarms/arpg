@@ -1,6 +1,6 @@
 namespace Arpg.Game.Gom;
 
-public class GameObjectSprite
+public class Sprite : GameObjectComponent
 {
   public Texture2D Texture { get; set; }
   public Vector2 Anchor { get; set; } = Vector2.Zero;
@@ -9,7 +9,7 @@ public class GameObjectSprite
   public float Scale { get; set; } = 1.0f;
   public Rectangle Source { get; set; }
 
-  public virtual void Draw(Vector2 position)
+  public override void Draw(Vector2 position)
   {
     DrawTexturePro(
       Texture,
@@ -26,3 +26,5 @@ public class GameObjectSprite
     );
   }
 }
+
+
