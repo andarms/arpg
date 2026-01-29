@@ -1,4 +1,4 @@
-using Arpg.Game.Gom;
+using Arpg.Engine.Gom;
 
 namespace Arpg.Game.GameObjects;
 

@@ -1,4 +1,4 @@
-namespace Arpg.Game.Gom;
+namespace Arpg.Engine.Gom;
 
 public class Animation
 {

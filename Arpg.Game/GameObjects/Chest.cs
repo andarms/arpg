@@ -1,5 +1,5 @@
 using Arpg.Engine.Assets;
-using Arpg.Game.Gom;
+using Arpg.Engine.Gom;
 
 namespace Arpg.Game.GameObjects;
 
