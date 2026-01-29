@@ -18,7 +18,12 @@ public class GameEditor
 
   public void Update()
   {
-    tileset.Update();
+    // Only update tileset when not on collision layer
+    if (GameEditorViewModel.SelectedLayer != 3)
+    {
+      tileset.Update();
+    }
+    
     layersToolbar.Update();
     toolToolbar.Update();
     mapPanel.Update();
@@ -27,7 +32,13 @@ public class GameEditor
   public void Draw()
   {
     mapPanel.Draw();
-    tileset.Draw();
+    
+    // Only draw tileset when not on collision layer
+    if (GameEditorViewModel.SelectedLayer != 3)
+    {
+      tileset.Draw();
+    }
+    
     miniMapPanel.Draw();
     layersToolbar.Draw();
     toolToolbar.Draw();
