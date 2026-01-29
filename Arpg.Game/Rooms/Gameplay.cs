@@ -6,8 +6,7 @@ namespace Arpg.Game.Rooms;
 
 public class Gameplay : Room
 {
-  readonly TilemapLayer[] layers = new TilemapLayer[3];
-  TilemapData tilemapData;
+  Tilemap tilemapData;
   Vector2 offset = new(0, 0);
 
   public Gameplay() : base()
@@ -35,7 +34,10 @@ public class Gameplay : Room
 
   public override void Draw()
   {
-    tilemapData.Draw(offset);
-    base.Draw();
+    // Draw layers individually to allow game objects between layers
+    tilemapData.Layer1.Draw(offset);
+    tilemapData.Layer2.Draw(offset);
+    base.Draw(); // Draw game objects
+    tilemapData.Layer3.Draw(offset);
   }
 }

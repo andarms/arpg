@@ -5,21 +5,21 @@ namespace Arpg.Editor;
 
 public class TilemapViewModel
 {
-  private TilemapData? tilemapData;
+  private Tilemap? tilemapData;
 
-  public TilemapData? Data => tilemapData;
+  public Tilemap? Data => tilemapData;
   public int Width => tilemapData?.Width ?? 0;
   public int Height => tilemapData?.Height ?? 0;
   public bool IsLoaded => tilemapData != null;
 
   // Collision rectangle management
-  public List<TilemapData.CollisionRectangle> CollisionRectangles => tilemapData?.CollisionRectangles ?? [];
+  public List<Tilemap.CollisionRectangle> CollisionRectangles => tilemapData?.CollisionRectangles ?? [];
 
   public void AddCollisionRectangle(Vector2 position, Vector2 size, bool solid = true)
   {
     if (tilemapData == null) return;
 
-    tilemapData.CollisionRectangles.Add(new TilemapData.CollisionRectangle(position, size, solid));
+    tilemapData.CollisionRectangles.Add(new Tilemap.CollisionRectangle(position, size, solid));
   }
 
   public void RemoveCollisionRectangle(int index)
