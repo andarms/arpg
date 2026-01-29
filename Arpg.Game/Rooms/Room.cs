@@ -50,6 +50,12 @@ public class Room
         this.groups[group] = groupObjects;
       }
       groupObjects.Add(gameObject);
+
+      // Register with collision system if it has a collider
+      if (gameObject.Get<Collider>() != null)
+      {
+        Game.Collisions.RegisterGameObject(gameObject, group);
+      }
     }
     objects.Add(gameObject);
   }
@@ -57,14 +63,27 @@ public class Room
   public void Add(GameObject gameObject)
   {
     objects.Add(gameObject);
+
+    // For objects added without groups, register with Obstacle group if they have colliders
+    if (gameObject.Get<Collider>() != null)
+    {
+      Game.Collisions.RegisterGameObject(gameObject, GameObjectGroup.Obstacle);
+    }
   }
 
   public void Remove(GameObject gameObject)
   {
     objects.Remove(gameObject);
-    foreach (var groupObjects in groups.Values)
+    foreach (var kvp in groups)
     {
-      groupObjects.Remove(gameObject);
+      if (kvp.Value.Remove(gameObject))
+      {
+        // Unregister from collision system if it has a collider
+        if (gameObject.Get<Collider>() != null)
+        {
+          Game.Collisions.UnregisterGameObject(gameObject, kvp.Key);
+        }
+      }
     }
   }
 

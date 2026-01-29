@@ -16,6 +16,12 @@ public class Gameplay : Room
 
     tilemapData = TilemapService.LoadFromFile("map.data");
 
+    // Load collision objects from tilemap data
+    var mapCollisions = tilemapData.CreateMapCollisionObjects();
+    foreach (var mapCollision in mapCollisions)
+    {
+      Add(mapCollision, [GameObjectGroup.Obstacle]);
+    }
   }
 
   public override void Update(float dt)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text;
+using Arpg.Engine.Gom;
 
 namespace Arpg.Engine.Tilemaps;
 
@@ -14,6 +15,21 @@ public class TilemapData
   public TilemapLayer[] Layers { get; private set; } = new TilemapLayer[LayerCount];
   public Tileset Tileset { get; private set; }
   public string TilesetPath { get; private set; } = string.Empty;
+  public List<CollisionRectangle> CollisionRectangles { get; private set; } = [];
+
+  public class CollisionRectangle
+  {
+    public Vector2 Position { get; set; }
+    public Vector2 Size { get; set; }
+    public bool Solid { get; set; } = true;
+
+    public CollisionRectangle(Vector2 position, Vector2 size, bool solid = true)
+    {
+      Position = position;
+      Size = size;
+      Solid = solid;
+    }
+  }
 
   public TilemapData(int width, int height, Tileset tileset, string tilesetPath = "")
   {
@@ -60,6 +76,16 @@ public class TilemapData
       }
     }
 
+    // Save collision rectangles
+    if (CollisionRectangles.Count > 0)
+    {
+      sb.AppendLine("[Collisions]");
+      foreach (var rect in CollisionRectangles)
+      {
+        sb.AppendLine($"Rect={rect.Position.X},{rect.Position.Y},{rect.Size.X},{rect.Size.Y},{(rect.Solid ? "1" : "0")}");
+      }
+    }
+
     File.WriteAllText(path, sb.ToString());
   }
 
@@ -72,6 +98,7 @@ public class TilemapData
     string tilesetPath = "";
     int currentLayer = -1;
     int currentRowInLayer = 0;
+    bool inCollisionSection = false;
 
     // Parse metadata
     if (lines.Length > 1)
@@ -95,22 +122,103 @@ public class TilemapData
     {
       string line = lines[i].Trim();
 
-      if (line.StartsWith("Layer"))
+      if (line == "[Collisions]" || line == "Collisions")
       {
-        currentLayer = int.Parse(line.Split('=')[1]);
-        currentRowInLayer = 0;
+        inCollisionSection = true;
+        currentLayer = -1; // Exit layer parsing mode
         continue;
       }
 
-      if (currentLayer >= 0 && IsValidLayer(currentLayer))
+      if (inCollisionSection)
       {
+        if (line.StartsWith("Rect="))
+        {
+          var rectData = line.Substring("Rect=".Length).Split(',');
+          if (rectData.Length >= 5)
+          {
+            float x = float.Parse(rectData[0]);
+            float y = float.Parse(rectData[1]);
+            float rectWidth = float.Parse(rectData[2]);
+            float rectHeight = float.Parse(rectData[3]);
+            bool solid = rectData[4] == "1";
+
+            tilemapData.CollisionRectangles.Add(new CollisionRectangle(
+              new Vector2(x, y),
+              new Vector2(rectWidth, rectHeight),
+              solid
+            ));
+          }
+        }
+        else if (line.StartsWith("{") && line.Contains("x:") && line.Contains("y:") && line.Contains("width:") && line.Contains("height:"))
+        {
+          // Parse format: {x:0,y:192,width:400,height:32}
+          string data = line.Trim('{', '}');
+          var pairs = data.Split(',');
+          float rectX = 0, rectY = 0, rectW = 0, rectH = 0;
+
+          foreach (var pair in pairs)
+          {
+            var keyValue = pair.Split(':');
+            if (keyValue.Length == 2)
+            {
+              string key = keyValue[0].Trim();
+              float value = float.Parse(keyValue[1].Trim());
+
+              switch (key)
+              {
+                case "x": rectX = value; break;
+                case "y": rectY = value; break;
+                case "width": rectW = value; break;
+                case "height": rectH = value; break;
+              }
+            }
+          }
+
+          tilemapData.CollisionRectangles.Add(new CollisionRectangle(
+            new Vector2(rectX, rectY),
+            new Vector2(rectW, rectH),
+            true // Default to solid for old format
+          ));
+        }
+        continue;
+      }
+
+      if (line.StartsWith("Layer"))
+      {
+        string layerValue = line.Split('=')[1];
+        if (int.TryParse(layerValue, out int parsedLayer))
+        {
+          currentLayer = parsedLayer;
+          currentRowInLayer = 0;
+          inCollisionSection = false;
+        }
+        else
+        {
+          // Invalid layer format, skip this line
+          currentLayer = -1;
+        }
+        continue;
+      }
+
+      if (currentLayer >= 0 && IsValidLayer(currentLayer) && !inCollisionSection)
+      {
+        // Skip lines that don't look like tile data
+        if (line.StartsWith("[") || line.StartsWith("{") ||
+            line.Contains("Collisions") || line.Contains("=") ||
+            string.IsNullOrWhiteSpace(line))
+        {
+          continue;
+        }
+
         string[] tileIndices = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (tileIndices.Length > 0)
         {
           for (int x = 0; x < tileIndices.Length; x++)
           {
-            int tileIndex = int.Parse(tileIndices[x]);
-            tilemapData.SetTile(currentLayer, x, currentRowInLayer, tileIndex);
+            if (int.TryParse(tileIndices[x], out int tileIndex))
+            {
+              tilemapData.SetTile(currentLayer, x, currentRowInLayer, tileIndex);
+            }
           }
           currentRowInLayer++;
         }
@@ -147,6 +255,19 @@ public class TilemapData
     }
 
     return (width, height);
+  }
+
+  public List<MapCollision> CreateMapCollisionObjects()
+  {
+    var mapCollisions = new List<MapCollision>();
+
+    foreach (var rect in CollisionRectangles)
+    {
+      var mapCollision = new MapCollision(rect.Position, rect.Size);
+      mapCollisions.Add(mapCollision);
+    }
+
+    return mapCollisions;
   }
 
   public void SetTile(int layer, int x, int y, int tileIndex)

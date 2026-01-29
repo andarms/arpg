@@ -13,5 +13,6 @@ public class GameObjectComponent
   public virtual void Initialize() { }
   public virtual void Update(float dt) { }
   public virtual void Draw(Vector2 position) { }
+  public virtual void Debug() { }
   public virtual void Terminate() { }
 }

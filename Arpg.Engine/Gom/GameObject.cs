@@ -36,6 +36,7 @@ public abstract class GameObject : IReadonlyGameObject
   public virtual void Debug()
   {
     DrawCircleV(Position, 2, Color.Green);
+    components.ForEach(c => c.Debug());
   }
 
   public T? Get<T>() where T : GameObjectComponent
@@ -47,6 +48,12 @@ public abstract class GameObject : IReadonlyGameObject
       componentCache[type] = cached;
     }
     return cached as T;
+  }
+
+  public void Add(GameObjectComponent component)
+  {
+    components.Add(component);
+    componentCache.Clear(); // Clear cache when adding new components
   }
 
 

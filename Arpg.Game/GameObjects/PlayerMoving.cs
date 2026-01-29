@@ -16,7 +16,24 @@ public class PlayerMoving : GameObjectState
     if (input.Length() > 0)
     {
       input = Vector2.Normalize(input);
-      Owner.Position += input * Speed * dt;
+      Vector2 movement = input * Speed * dt;
+      Vector2 targetPosition = Owner.Position + movement;
+
+      // Use collision-aware movement
+      var collider = Owner.Get<Collider>();
+      if (collider != null)
+      {
+        Owner.Position = Game.Collisions.MoveAndCollide(
+          Owner.Position,
+          targetPosition,
+          collider,
+          GameObjectGroup.Player // Exclude player group from collision checks
+        );
+      }
+      else
+      {
+        Owner.Position = targetPosition; // Fallback if no collider
+      }
       FacingDirection? facing = Owner.Get<FacingDirection>();
       facing?.SetDirection(input);
       AnimatedSprite? animatedSprite = Owner.Get<AnimatedSprite>();

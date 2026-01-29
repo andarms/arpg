@@ -37,6 +37,16 @@ public class Player : GameObject
     components.Add(new CameraFollowComponent());
     components.Add(new FacingDirection());
 
+    // Add collision component
+    var collider = new Collider
+    {
+      Offset = new Vector2(-4, -8), // Offset to align with sprite anchor (8, 16)
+      Size = new Vector2(8, 8), // Same as sprite size
+      Solid = false, // Player is not a solid obstacle
+      CollisionMask = GameObjectGroup.Obstacle // Player collides with obstacles
+    };
+    Add(collider);
+
     States.Register(new PlayerMoving());
     States.SetInitial<PlayerMoving>();
   }

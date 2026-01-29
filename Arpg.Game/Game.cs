@@ -1,3 +1,4 @@
+using Arpg.Engine.Collisions;
 using Arpg.Game.Core;
 using Arpg.Game.Rooms;
 using Arpg.Game.Utils;
@@ -11,6 +12,7 @@ public static class Game
   public static Room ActiveRoom => Rooms.ActiveRoom ?? throw new InvalidOperationException("No active room.");
   public static Viewport Viewport { get; } = new();
   public static Vector2 Limits => new(5000, 3000);
+  public static CollisionSystem Collisions { get; } = new();
 
   public static bool DebugMode { get; set; } = false;
 
