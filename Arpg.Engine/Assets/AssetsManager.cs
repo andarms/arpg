@@ -2,10 +2,15 @@ namespace Arpg.Engine.Assets;
 
 public static class AssetsManager
 {
-  const string ASSETS_PATH = "Assets/";
+  private static string ASSETS_PATH = "Assets/";
   public static readonly Dictionary<string, Texture2D> Textures = [];
   public static readonly Dictionary<string, List<int>> Maps = [];
   public static Font DefaultFont { get; private set; }
+
+  public static void SetAssetBasePath(string basePath)
+  {
+    ASSETS_PATH = basePath.EndsWith('/') ? basePath : basePath + "/";
+  }
 
 
   public static void LoadAssets()

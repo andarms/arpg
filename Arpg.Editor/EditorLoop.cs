@@ -1,47 +1,36 @@
+using Arpg.Engine;
 using rlImGui_cs;
 using ImGuiNET;
+
 namespace Arpg.Editor;
 
-public static class Window
+public class EditorLoop : ILoop
 {
-  static GameEditor editor;
+  private GameEditor? editor;
 
-  public static void Initialize()
+  public event Action? OnSwitchRequested;
+
+  public void Initialize()
   {
-    InitWindow(1280, 720, "Editor");
-    SetTargetFPS(60);
     editor = new GameEditor();
     rlImGui.Setup(true);
-
   }
 
-  public static void Run()
+  public void Update(float deltaTime)
   {
-    Initialize();
-    Loop();
-    CloseWindow();
-  }
-
-  private static void Loop()
-  {
-
-    while (!WindowShouldClose())
+    // Check for mode switch (F5 to game)
+    if (IsKeyPressed(KeyboardKey.F5))
     {
-      Update();
-      Draw();
+      OnSwitchRequested?.Invoke();
+      return;
     }
-    rlImGui.Shutdown();
+
+    editor?.Update();
   }
 
-  private static void Update()
-  {
-    editor.Update();
-  }
-
-  private static void Draw()
+  public void Draw()
   {
     ClearBackground(Color.Black);
-    BeginDrawing();
     rlImGui.Begin();
 
     if (ImGui.BeginMainMenuBar())
@@ -63,7 +52,7 @@ public static class Window
         ImGui.Separator();
         if (ImGui.MenuItem("Exit"))
         {
-          CloseWindow();
+          OnSwitchRequested?.Invoke();
         }
         ImGui.EndMenu();
       }
@@ -83,8 +72,13 @@ public static class Window
 
       ImGui.EndMainMenuBar();
     }
-    editor.Draw();
+
+    editor?.Draw();
     rlImGui.End();
-    EndDrawing();
+  }
+
+  public void OnExit()
+  {
+    rlImGui.Shutdown();
   }
 }

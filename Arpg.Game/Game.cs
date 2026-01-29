@@ -18,7 +18,7 @@ public static class Game
 
   public static void Initialize()
   {
-    Rooms.Register<Gameplay>(new Gameplay());
+    Rooms.Register(new Gameplay());
     Rooms.SwitchTo<Gameplay>();
   }
 
