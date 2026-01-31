@@ -9,6 +9,7 @@ public class EditorLoop : ILoop
   private GameEditor? editor;
 
   public event Action? OnSwitchRequested;
+  Color backgroundColor = Color.Gray;
 
   public void Initialize()
   {
@@ -30,7 +31,7 @@ public class EditorLoop : ILoop
 
   public void Draw()
   {
-    ClearBackground(Color.Black);
+    ClearBackground(backgroundColor);
     rlImGui.Begin();
 
     if (ImGui.BeginMainMenuBar())

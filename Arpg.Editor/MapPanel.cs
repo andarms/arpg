@@ -231,8 +231,8 @@ public class MapPanel
   {
     if (!GameEditorViewModel.ShowGrid) return;
 
-    int gridCols = (cols * Settings.ScaledTileSize) / CollisionGridSize;
-    int gridRows = (rows * Settings.ScaledTileSize) / CollisionGridSize;
+    int gridCols = cols * Settings.ScaledTileSize / CollisionGridSize;
+    int gridRows = rows * Settings.ScaledTileSize / CollisionGridSize;
 
     // Draw vertical lines
     for (int x = 0; x <= gridCols; x++)
@@ -292,7 +292,7 @@ public class MapPanel
       DrawLineV(
         new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y),
         new Vector2(Position.X + x * Settings.ScaledTileSize, Position.Y + rows * Settings.ScaledTileSize),
-        Color.Gray
+        Color.LightGray
       );
     }
 
@@ -301,7 +301,7 @@ public class MapPanel
       DrawLineV(
         new Vector2(Position.X, Position.Y + y * Settings.ScaledTileSize),
         new Vector2(Position.X + cols * Settings.ScaledTileSize, Position.Y + y * Settings.ScaledTileSize),
-        Color.Gray
+        Color.LightGray
       );
     }
   }
