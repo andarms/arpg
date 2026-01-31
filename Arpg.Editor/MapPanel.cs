@@ -23,8 +23,8 @@ public class MapPanel
   {
     if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
 
-    // Handle collision rectangle creation for Layer 3
-    if (GameEditorViewModel.SelectedLayer == 3)
+    // Handle collision rectangle creation for Collision layer
+    if (GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision)
     {
       HandleCollisionRectangleInput();
     }
@@ -124,7 +124,7 @@ public class MapPanel
       else
       {
         GameEditorViewModel.ShowGrid = true;
-        GameEditorViewModel.SelectedLayer = 0;
+        GameEditorViewModel.SelectedLayer = (int)TileLayer.Layer1;
       }
     }
 
@@ -172,13 +172,13 @@ public class MapPanel
     }
 
     // Draw collision rectangles when on collision layer or for reference
-    if (GameEditorViewModel.SelectedLayer == 3 || GameEditorViewModel.SelectedLayer == -1)
+    if (GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision || GameEditorViewModel.SelectedLayer == -1)
     {
       DrawCollisionRectangles();
     }
 
     // Draw collision grid when collision layer is selected
-    if (GameEditorViewModel.SelectedLayer == 3)
+    if (GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision)
     {
       DrawCollisionGrid();
     }
@@ -200,7 +200,7 @@ public class MapPanel
     {
       foreach (var rect in GameEditorViewModel.Tilemap.CollisionRectangles)
       {
-        Color color = GameEditorViewModel.SelectedLayer == 3 ? Color.Red : new Color(255, 0, 0, 128);
+        Color color = GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision ? Color.Red : new Color(255, 0, 0, 128);
 
         // Convert from world coordinates to editor coordinates
         Vector2 editorPos = Position + (rect.Position * Settings.Scale);

@@ -5,9 +5,9 @@ namespace Arpg.Editor;
 
 public class TilemapViewModel
 {
-  private Tilemap? tilemapData;
+  private EditorTilemap? tilemapData;
 
-  public Tilemap? Data => tilemapData;
+  public EditorTilemap? Data => tilemapData;
   public int Width => tilemapData?.Width ?? 0;
   public int Height => tilemapData?.Height ?? 0;
   public bool IsLoaded => tilemapData != null;
@@ -48,14 +48,38 @@ public class TilemapViewModel
 
   public void NewMap(int width, int height, string? tilesetPath = null)
   {
-    tilemapData = TilemapService.CreateNew(width, height, tilesetPath);
+    var baseTilemap = TilemapService.CreateNew(width, height, tilesetPath);
+    tilemapData = new EditorTilemap(width, height, baseTilemap.Tileset, baseTilemap.TilesetPath);
+
+    // Copy any existing data if needed
+    for (int layer = 0; layer < baseTilemap.Layers.Length; layer++)
+    {
+      for (int i = 0; i < baseTilemap.Layers[layer].Tiles.Count; i++)
+      {
+        tilemapData.Layers[layer].Tiles[i] = baseTilemap.Layers[layer].Tiles[i];
+      }
+    }
   }
 
   public void Load(string filePath)
   {
     try
     {
-      tilemapData = TilemapService.LoadFromFile(filePath);
+      var baseTilemap = TilemapService.LoadFromFile(filePath);
+      tilemapData = new EditorTilemap(baseTilemap.Width, baseTilemap.Height, baseTilemap.Tileset, baseTilemap.TilesetPath);
+
+      // Copy layer data
+      for (int layer = 0; layer < baseTilemap.Layers.Length; layer++)
+      {
+        for (int i = 0; i < baseTilemap.Layers[layer].Tiles.Count; i++)
+        {
+          tilemapData.Layers[layer].Tiles[i] = baseTilemap.Layers[layer].Tiles[i];
+        }
+      }
+
+      // Copy collision rectangles
+      tilemapData.CollisionRectangles.Clear();
+      tilemapData.CollisionRectangles.AddRange(baseTilemap.CollisionRectangles);
     }
     catch (Exception ex)
     {
@@ -106,6 +130,6 @@ public class TilemapViewModel
 
   public void Draw(Vector2 offset = default, int scale = 1)
   {
-    tilemapData?.Draw(offset, scale);
+    tilemapData?.DrawWithLayerFading(offset, scale, GameEditorViewModel.SelectedLayer);
   }
 }

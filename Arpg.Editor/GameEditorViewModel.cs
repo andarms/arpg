@@ -6,6 +6,10 @@ public static class GameEditorViewModel
   public static int SelectedTool { get; set; } = 0;
   public static bool ShowGrid { get; set; } = true;
 
+  // Layer fading settings
+  public static bool EnableLayerFading { get; set; } = true;
+  public static float InactiveLayerOpacity { get; set; } = 0.3f;
+
   private static TilesetViewModel? tileset;
   public static TilesetViewModel Tileset => tileset ?? throw new Exception("Tileset not initialized");
   public static TilemapViewModel? Tilemap { get; set; }

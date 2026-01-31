@@ -45,8 +45,10 @@ public class TilemapLayer
     }
   }
 
-  public void Draw(Vector2 offset = default, int scale = 1)
+  public void Draw(Vector2 offset = default, int scale = 1, Color tint = default)
   {
+    Color drawColor = tint.Equals(default(Color)) ? Color.White : tint;
+
     for (int y = 0; y < mapHeight; y++)
     {
       for (int x = 0; x < mapWidth; x++)
@@ -69,7 +71,7 @@ public class TilemapLayer
             tileset.TileHeight * scale
           );
 
-          DrawTexturePro(tileset.Texture, sourceRect, destRect, Vector2.Zero, 0.0f, Color.White);
+          DrawTexturePro(tileset.Texture, sourceRect, destRect, Vector2.Zero, 0.0f, drawColor);
         }
       }
     }
