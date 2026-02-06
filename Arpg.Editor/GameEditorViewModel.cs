@@ -6,6 +6,7 @@ public static class GameEditorViewModel
   public static int SelectedTool { get; set; } = 0;
   public static bool ShowGrid { get; set; } = true;
 
+
   // Layer fading settings
   public static bool EnableLayerFading { get; set; } = true;
   public static float InactiveLayerOpacity { get; set; } = 0.3f;

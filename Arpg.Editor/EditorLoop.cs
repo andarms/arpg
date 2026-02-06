@@ -1,19 +1,21 @@
+using Arpg.Editor.GameConsole;
 using Arpg.Engine;
+using Arpg.Engine.Scenes;
 
 namespace Arpg.Editor;
 
 public class EditorLoop : ILoop
 {
-  private GameEditor? editor;
-
   public event Action? OnSwitchRequested;
-  Color backgroundColor = Color.Black;
 
 
-  bool showOverlay = false;
   public void Initialize()
   {
-    editor = new GameEditor();
+    // Create and add the main editor scene
+    var editorScene = new GameEditorScene();
+    ScenesController.AddScene(editorScene);
+    ScenesController.AddScene(new ConsoleScene());
+    ScenesController.SwitchTo<GameEditorScene>();
   }
 
   public void Update(float deltaTime)
@@ -25,26 +27,19 @@ public class EditorLoop : ILoop
       return;
     }
 
-    if (IsKeyPressed(KeyboardKey.Semicolon))
-    {
-      showOverlay = !showOverlay;
-    }
-
-    editor?.Update();
+    // Update the scene manager
+    ScenesController.Update(deltaTime);
   }
 
   public void Draw()
   {
-    ClearBackground(backgroundColor);
-    editor?.Draw();
-    if (showOverlay)
-    {
-      DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), new Color(0, 0, 0, 220));
-      DrawTextEx(Constants.DefaultFont, "EDITOR MODE\n\nF5 - Switch to Game Mode\n; - Toggle Overlay", new Vector2(20, 20), 24, 2, Color.White);
-    }
+    // Use scene manager to handle drawing
+    ScenesController.Draw();
   }
 
   public void OnExit()
   {
+    // Clean up scenes when exiting
+    ScenesController.ClearAllScenes();
   }
 }

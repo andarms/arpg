@@ -11,7 +11,7 @@ public class Window(string windowTitle = "ARPG")
   public void Run()
   {
     InitializeWindow();
-    SwitchToGameLoop();
+    SwitchToEditorLoop();
     MainLoop();
     currentLoop?.OnExit();
     CloseWindow();
@@ -55,6 +55,7 @@ public class Window(string windowTitle = "ARPG")
   {
     InitWindow(Settings.Window.Width, Settings.Window.Height, windowTitle);
     SetTargetFPS(Settings.Window.FPS);
+    SetExitKey(KeyboardKey.Delete);
   }
 
   private void MainLoop()

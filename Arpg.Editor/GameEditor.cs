@@ -1,22 +1,29 @@
+using Arpg.Editor.GameConsole;
+using Arpg.Engine.Scenes;
+
 namespace Arpg.Editor;
 
-public class GameEditor
+public class GameEditorScene : Scene
 {
   readonly TilesetPanel tileset = new();
   readonly MapPanel mapPanel = new();
-
-
   readonly LayersToolbar layersToolbar = new();
   readonly ToolToolbar toolToolbar = new();
 
-  public GameEditor()
+  public GameEditorScene()
   {
+    BackgroundColor = Color.Black;
+  }
+
+  public override void Initialize()
+  {
+    base.Initialize();
     GameEditorViewModel.CreateTilemap(25, 20, "Textures/tileset.png");
     GameEditorViewModel.SelectedLayer = 0;
     GameEditorViewModel.SelectedTool = 0;
   }
 
-  public void Update()
+  public override void Update(float dt)
   {
     // Only update tileset when not on collision layer
     if (GameEditorViewModel.SelectedLayer != 3)
@@ -27,9 +34,15 @@ public class GameEditor
     layersToolbar.Update();
     toolToolbar.Update();
     mapPanel.Update();
+
+
+    if (IsKeyPressed(Constants.ConsoleToggleKey))
+    {
+      ScenesController.PushScene<ConsoleScene>();
+    }
   }
 
-  public void Draw()
+  public override void Draw()
   {
     mapPanel.Draw();
 
