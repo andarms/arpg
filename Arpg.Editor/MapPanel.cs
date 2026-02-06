@@ -2,12 +2,14 @@ namespace Arpg.Editor;
 
 public class MapPanel
 {
-  public Vector2 Position = new(Settings.Padding, Settings.Padding);
+  public Vector2 Position = new(Constants.Padding, Constants.Padding * 3);
 
   const int cols = 25;
-  const int rows = 12;
+  const int rows = 20;
   const int CollisionGridSize = 8; // 8px grid for collision rectangles
   const int ScrollSpeed = 32; // pixels to scroll per arrow key press
+  const int ScrollbarWidth = 8; // Width/height of scrollbars
+  const int ScrollbarPadding = 2; // Padding around scrollbar elements
 
   Rectangle bounds;
 
@@ -20,7 +22,7 @@ public class MapPanel
 
   public MapPanel()
   {
-    bounds = new Rectangle(Position.X, Position.Y, cols * Settings.ScaledTileSize, rows * Settings.ScaledTileSize);
+    bounds = new Rectangle(Position.X, Position.Y, cols * Constants.ScaledTileSize, rows * Constants.ScaledTileSize);
   }
 
   public void Update()
@@ -78,8 +80,8 @@ public class MapPanel
       if (size.X >= CollisionGridSize && size.Y >= CollisionGridSize)
       {
         // Convert from editor coordinates to world coordinates, accounting for camera offset
-        Vector2 worldPosition = (topLeft - Position - CameraOffset) / Settings.Scale;
-        Vector2 worldSize = size / Settings.Scale;
+        Vector2 worldPosition = (topLeft - Position - CameraOffset) / Constants.Scale;
+        Vector2 worldSize = size / Constants.Scale;
 
         GameEditorViewModel.Tilemap?.AddCollisionRectangle(
           worldPosition,
@@ -95,7 +97,7 @@ public class MapPanel
     if (IsMouseButtonPressed(MouseButton.Right))
     {
       // Delete collision rectangle at mouse position
-      Vector2 worldPos = (mousePos - Position - CameraOffset) / Settings.Scale;
+      Vector2 worldPos = (mousePos - Position - CameraOffset) / Constants.Scale;
       int rectIndex = GameEditorViewModel.Tilemap?.FindCollisionRectangleAt(worldPos) ?? -1;
       if (rectIndex >= 0)
       {
@@ -146,10 +148,10 @@ public class MapPanel
     if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
 
     // Calculate the max scroll bounds based on map size
-    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Settings.ScaledTileSize;
-    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Settings.ScaledTileSize;
-    int viewWidthPx = cols * Settings.ScaledTileSize;
-    int viewHeightPx = rows * Settings.ScaledTileSize;
+    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
+    int viewWidthPx = cols * Constants.ScaledTileSize;
+    int viewHeightPx = rows * Constants.ScaledTileSize;
 
     // Allow camera to scroll if map is larger than viewport
     float maxOffsetX = Math.Max(0, mapWidthPx - viewWidthPx);
@@ -207,8 +209,8 @@ public class MapPanel
     if (CheckCollisionPointRec(mousePos, bounds))
     {
       // Account for camera offset when calculating tile coordinates
-      int x = (int)((mousePos.X - Position.X - CameraOffset.X) / Settings.ScaledTileSize);
-      int y = (int)((mousePos.Y - Position.Y - CameraOffset.Y) / Settings.ScaledTileSize);
+      int x = (int)((mousePos.X - Position.X - CameraOffset.X) / Constants.ScaledTileSize);
+      int y = (int)((mousePos.Y - Position.Y - CameraOffset.Y) / Constants.ScaledTileSize);
       return (x, y);
     }
     // Return -1 when out of bounds
@@ -218,13 +220,13 @@ public class MapPanel
   public void Draw()
   {
     // Enable clipping to map panel bounds
-    BeginScissorMode((int)Position.X, (int)Position.Y, cols * Settings.ScaledTileSize, rows * Settings.ScaledTileSize);
+    BeginScissorMode((int)Position.X, (int)Position.Y, cols * Constants.ScaledTileSize, rows * Constants.ScaledTileSize);
 
     if (GameEditorViewModel.Tilemap?.IsLoaded ?? false)
     {
       // Calculate scale based on Settings.ScaledTileSize vs actual tile size
       int tileSize = GameEditorViewModel.Tilemap.Data?.Tileset.TileWidth ?? 16;
-      int scale = Settings.ScaledTileSize / tileSize;
+      int scale = Constants.ScaledTileSize / tileSize;
 
       // Apply camera offset to the tilemap drawing position
       Vector2 drawPosition = Position + CameraOffset;
@@ -255,6 +257,9 @@ public class MapPanel
 
     // End clipping
     EndScissorMode();
+
+    // Draw scrollbars outside the clipped area
+    DrawScrollbars();
   }
 
   void DrawCollisionRectangles()
@@ -266,8 +271,8 @@ public class MapPanel
         Color color = GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision ? Color.Red : new Color(255, 0, 0, 128);
 
         // Convert from world coordinates to editor coordinates, accounting for camera offset
-        Vector2 editorPos = Position + CameraOffset + (rect.Position * Settings.Scale);
-        Vector2 editorSize = rect.Size * Settings.Scale;
+        Vector2 editorPos = Position + CameraOffset + (rect.Position * Constants.Scale);
+        Vector2 editorSize = rect.Size * Constants.Scale;
 
         DrawRectangleLines(
           (int)editorPos.X,
@@ -296,8 +301,8 @@ public class MapPanel
     if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
 
     // Calculate grid for entire map, not just viewport
-    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Settings.ScaledTileSize;
-    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Settings.ScaledTileSize;
+    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
     int gridCols = mapWidthPx / CollisionGridSize;
     int gridRows = mapHeightPx / CollisionGridSize;
 
@@ -360,15 +365,15 @@ public class MapPanel
     Vector2 gridPosition = Position + CameraOffset;
 
     // Draw grid for entire map, not just viewport
-    int mapCols = GameEditorViewModel.Tilemap.Width;
-    int mapRows = GameEditorViewModel.Tilemap.Height;
+    int mapCols = GameEditorViewModel.Tilemap?.Width ?? cols;
+    int mapRows = GameEditorViewModel.Tilemap?.Height ?? rows;
 
     // Draw vertical lines for all tiles
     for (int x = 0; x <= mapCols; x++)
     {
       DrawLineV(
-        new Vector2(gridPosition.X + x * Settings.ScaledTileSize, gridPosition.Y),
-        new Vector2(gridPosition.X + x * Settings.ScaledTileSize, gridPosition.Y + mapRows * Settings.ScaledTileSize),
+        new Vector2(gridPosition.X + x * Constants.ScaledTileSize, gridPosition.Y),
+        new Vector2(gridPosition.X + x * Constants.ScaledTileSize, gridPosition.Y + mapRows * Constants.ScaledTileSize),
         Color.LightGray
       );
     }
@@ -377,10 +382,116 @@ public class MapPanel
     for (int y = 0; y <= mapRows; y++)
     {
       DrawLineV(
-        new Vector2(gridPosition.X, gridPosition.Y + y * Settings.ScaledTileSize),
-        new Vector2(gridPosition.X + mapCols * Settings.ScaledTileSize, gridPosition.Y + y * Settings.ScaledTileSize),
+        new Vector2(gridPosition.X, gridPosition.Y + y * Constants.ScaledTileSize),
+        new Vector2(gridPosition.X + mapCols * Constants.ScaledTileSize, gridPosition.Y + y * Constants.ScaledTileSize),
         Color.LightGray
       );
     }
+  }
+
+  void DrawScrollbars()
+  {
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+
+    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
+    int viewportWidth = cols * Constants.ScaledTileSize;
+    int viewportHeight = rows * Constants.ScaledTileSize;
+
+    // Only draw scrollbars if map is larger than viewport
+    bool needsHorizontalScrollbar = mapWidthPx > viewportWidth;
+    bool needsVerticalScrollbar = mapHeightPx > viewportHeight;
+
+    if (needsHorizontalScrollbar)
+    {
+      DrawHorizontalScrollbar(mapWidthPx, viewportWidth);
+    }
+
+    if (needsVerticalScrollbar)
+    {
+      DrawVerticalScrollbar(mapHeightPx, viewportHeight);
+    }
+  }
+
+  void DrawHorizontalScrollbar(int mapWidth, int viewportWidth)
+  {
+    // Calculate scrollbar dimensions and position
+    float scrollbarY = Position.Y + rows * Constants.ScaledTileSize + ScrollbarPadding;
+    float scrollbarTrackWidth = cols * Constants.ScaledTileSize;
+
+    // Draw scrollbar track (background)
+    DrawRectangle(
+      (int)Position.X,
+      (int)scrollbarY,
+      (int)scrollbarTrackWidth,
+      ScrollbarWidth,
+      Color.DarkGray
+    );
+
+    // Calculate thumb dimensions and position
+    float thumbWidthRatio = (float)viewportWidth / mapWidth;
+    float thumbWidth = scrollbarTrackWidth * thumbWidthRatio;
+    float maxScrollOffset = mapWidth - viewportWidth;
+    float scrollProgress = maxScrollOffset > 0 ? Math.Abs(CameraOffset.X) / maxScrollOffset : 0;
+    float thumbX = Position.X + (scrollbarTrackWidth - thumbWidth) * scrollProgress;
+
+    // Draw scrollbar thumb (handle)
+    DrawRectangle(
+      (int)thumbX,
+      (int)(scrollbarY + ScrollbarPadding),
+      (int)thumbWidth,
+      ScrollbarWidth - (ScrollbarPadding * 2),
+      Color.LightGray
+    );
+
+    // Draw thumb border
+    DrawRectangleLines(
+      (int)thumbX,
+      (int)(scrollbarY + ScrollbarPadding),
+      (int)thumbWidth,
+      ScrollbarWidth - (ScrollbarPadding * 2),
+      Color.Gray
+    );
+  }
+
+  void DrawVerticalScrollbar(int mapHeight, int viewportHeight)
+  {
+    // Calculate scrollbar dimensions and position
+    float scrollbarX = Position.X + cols * Constants.ScaledTileSize + ScrollbarPadding;
+    float scrollbarTrackHeight = rows * Constants.ScaledTileSize;
+
+    // Draw scrollbar track (background)
+    DrawRectangle(
+      (int)scrollbarX,
+      (int)Position.Y,
+      ScrollbarWidth,
+      (int)scrollbarTrackHeight,
+      Color.DarkGray
+    );
+
+    // Calculate thumb dimensions and position
+    float thumbHeightRatio = (float)viewportHeight / mapHeight;
+    float thumbHeight = scrollbarTrackHeight * thumbHeightRatio;
+    float maxScrollOffset = mapHeight - viewportHeight;
+    float scrollProgress = maxScrollOffset > 0 ? Math.Abs(CameraOffset.Y) / maxScrollOffset : 0;
+    float thumbY = Position.Y + (scrollbarTrackHeight - thumbHeight) * scrollProgress;
+
+    // Draw scrollbar thumb (handle)
+    DrawRectangle(
+      (int)(scrollbarX + ScrollbarPadding),
+      (int)thumbY,
+      ScrollbarWidth - (ScrollbarPadding * 2),
+      (int)thumbHeight,
+      Color.LightGray
+    );
+
+    // Draw thumb border
+    DrawRectangleLines(
+      (int)(scrollbarX + ScrollbarPadding),
+      (int)thumbY,
+      ScrollbarWidth - (ScrollbarPadding * 2),
+      (int)thumbHeight,
+      Color.Gray
+    );
   }
 }

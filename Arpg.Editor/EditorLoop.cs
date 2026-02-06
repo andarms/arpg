@@ -1,6 +1,4 @@
 using Arpg.Engine;
-using rlImGui_cs;
-using ImGuiNET;
 
 namespace Arpg.Editor;
 
@@ -9,12 +7,13 @@ public class EditorLoop : ILoop
   private GameEditor? editor;
 
   public event Action? OnSwitchRequested;
-  Color backgroundColor = Color.Gray;
+  Color backgroundColor = Color.Black;
 
+
+  bool showOverlay = false;
   public void Initialize()
   {
     editor = new GameEditor();
-    rlImGui.Setup(true);
   }
 
   public void Update(float deltaTime)
@@ -26,60 +25,26 @@ public class EditorLoop : ILoop
       return;
     }
 
+    if (IsKeyPressed(KeyboardKey.Semicolon))
+    {
+      showOverlay = !showOverlay;
+    }
+
     editor?.Update();
   }
 
   public void Draw()
   {
     ClearBackground(backgroundColor);
-    rlImGui.Begin();
-
-    if (ImGui.BeginMainMenuBar())
-    {
-      if (ImGui.BeginMenu("File"))
-      {
-        if (ImGui.MenuItem("New"))
-        {
-          // Handle new file action
-        }
-        if (ImGui.MenuItem("Open"))
-        {
-          // Handle open file action
-        }
-        if (ImGui.MenuItem("Save"))
-        {
-          // Handle save file action
-        }
-        ImGui.Separator();
-        if (ImGui.MenuItem("Exit"))
-        {
-          OnSwitchRequested?.Invoke();
-        }
-        ImGui.EndMenu();
-      }
-
-      if (ImGui.BeginMenu("Edit"))
-      {
-        if (ImGui.MenuItem("Undo"))
-        {
-          // Handle undo action
-        }
-        if (ImGui.MenuItem("Redo"))
-        {
-          // Handle redo action
-        }
-        ImGui.EndMenu();
-      }
-
-      ImGui.EndMainMenuBar();
-    }
-
     editor?.Draw();
-    rlImGui.End();
+    if (showOverlay)
+    {
+      DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), new Color(0, 0, 0, 220));
+      DrawTextEx(Constants.DefaultFont, "EDITOR MODE\n\nF5 - Switch to Game Mode\n; - Toggle Overlay", new Vector2(20, 20), 24, 2, Color.White);
+    }
   }
 
   public void OnExit()
   {
-    rlImGui.Shutdown();
   }
 }

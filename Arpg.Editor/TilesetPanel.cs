@@ -3,10 +3,10 @@ namespace Arpg.Editor;
 public class TilesetPanel
 {
 
-  public Vector2 Position = new(0, GetScreenHeight() - 214 - Settings.Padding);
+  public Vector2 Position = new(GetScreenWidth() - 416 - Constants.Padding, 146 + Constants.Padding);
 
   const int spacing = 2;
-  const int panelTilesWide = 26;
+  const int panelTilesWide = 12;
 
   const int TILES_PER_PAGE = panelTilesWide * 6;
 
@@ -24,13 +24,13 @@ public class TilesetPanel
 
   public TilesetPanel()
   {
-    pageUpButton = new Rectangle(Position.X + (panelTilesWide * (Settings.ScaledTileSize + spacing)) + 32, Position.Y + Settings.Padding, 32, 32);
-    pageDownButton = new Rectangle(Position.X + (panelTilesWide * (Settings.ScaledTileSize + spacing)) + 32, Position.Y + Settings.Padding + 40, 32, 32);
+    pageUpButton = new Rectangle(Position.X + 128, Position.Y, 32, 32);
+    pageDownButton = new Rectangle(Position.X + 128, Position.Y + 32, 32, 32);
     upArrowSource = new Rectangle(160, 64, 16, 16);
     downArrowSource = new Rectangle(176, 64, 16, 16);
   }
 
-  public int TotalPages => (int)Math.Ceiling((double)GameEditorViewModel.Tileset.Tiles.Count / TILES_PER_PAGE);
+  public static int TotalPages => (int)Math.Ceiling((double)GameEditorViewModel.Tileset.Tiles.Count / TILES_PER_PAGE);
 
   public bool CanPageUp => currentPage > 0;
 
@@ -59,8 +59,9 @@ public class TilesetPanel
       {
         int x = i % panelTilesWide;
         int y = i / panelTilesWide;
-        Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
-        Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
+        float gridOffsetY = Constants.TileSize * 4 + Constants.Padding;
+        Vector2 position = Position + new Vector2(x * (Constants.ScaledTileSize + spacing), gridOffsetY + y * (Constants.ScaledTileSize + spacing));
+        Rectangle destination = new(position.X, position.Y, Constants.ScaledTileSize, Constants.ScaledTileSize);
         if (CheckCollisionPointRec(mousePosition, destination))
         {
           // Calculate absolute tile index across all pages
@@ -83,49 +84,31 @@ public class TilesetPanel
 
   public void Draw()
   {
-    // Draw grid
-    // Draw horizontal grid lines
-    for (int row = 0; row <= gridRows; row++)
-    {
-      float y = Position.Y + Settings.Padding + (row * (Settings.ScaledTileSize + spacing));
-      float startX = Position.X + Settings.Padding;
-      float endX = Position.X + Settings.Padding + (gridCols * (Settings.ScaledTileSize + spacing));
-      DrawLineEx(new Vector2(startX, y), new Vector2(endX, y), 1, Color.LightGray);
-    }
-
-    // Draw vertical grid lines
-    for (int col = 0; col <= gridCols; col++)
-    {
-      float x = Position.X + Settings.Padding + (col * (Settings.ScaledTileSize + spacing));
-      float startY = Position.Y + Settings.Padding;
-      float endY = Position.Y + Settings.Padding + (gridRows * (Settings.ScaledTileSize + spacing));
-      DrawLineEx(new Vector2(x, startY), new Vector2(x, endY), 1, Color.LightGray);
-    }
-
-    // Draw tiles
-    for (int i = 0; i < TilesOnPage.Count(); i++)
-    {
-      int x = i % panelTilesWide;
-      int y = i / panelTilesWide;
-      Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
-      Rectangle destination = new Rectangle(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
-      DrawTexturePro(GameEditorViewModel.Tileset.Texture, TilesOnPage.ElementAt(i), destination, Vector2.Zero, 0.0f, Color.White);
-    }
+    // Draw the tileset grid
+    DrawTilesetGrid();
 
     // Draw page navigation buttons
     // Up arrow button
     Color upButtonColor = CanPageUp ? Color.White : Color.Gray;
-    DrawTexturePro(Settings.CursorTexture, upArrowSource, pageUpButton, Vector2.Zero, 0.0f, upButtonColor);
+    DrawTexturePro(Constants.CursorTexture, upArrowSource, pageUpButton, Vector2.Zero, 0.0f, upButtonColor);
 
     // Down arrow button
     Color downButtonColor = CanPageDown ? Color.White : Color.Gray;
-    DrawTexturePro(Settings.CursorTexture, downArrowSource, pageDownButton, Vector2.Zero, 0.0f, downButtonColor);
+    DrawTexturePro(Constants.CursorTexture, downArrowSource, pageDownButton, Vector2.Zero, 0.0f, downButtonColor);
 
     // Draw page indicator
     string pageText = $"Page {currentPage + 1} of {TotalPages}";
-    Vector2 pageTextPosition = new Vector2(pageUpButton.X, pageDownButton.Y + 40);
-    DrawTextEx(Settings.DefaultFont, pageText, pageTextPosition, 32, 0, Color.White);
+    Vector2 pageTextPosition = new Vector2(pageUpButton.X + 48, pageUpButton.Y);
+    DrawTextEx(Constants.DefaultFont, pageText, pageTextPosition, 32, 0, Color.White);
 
+    // Draw the tile preview
+    DrawTilePreview();
+  }
+
+
+
+  void DrawTilePreview()
+  {
     // Draw selection highlight and preview
     if (GameEditorViewModel.Tileset.SelectedTileIndex != -1)
     {
@@ -137,14 +120,51 @@ public class TilesetPanel
       {
         int x = relativeIndex % panelTilesWide;
         int y = relativeIndex / panelTilesWide;
-        Vector2 position = Position + new Vector2(x * (Settings.ScaledTileSize + spacing) + Settings.Padding, y * (Settings.ScaledTileSize + spacing) + Settings.Padding);
-        Rectangle destination = new(position.X, position.Y, Settings.ScaledTileSize, Settings.ScaledTileSize);
+        float gridOffsetY = Constants.TileSize * 4 + Constants.Padding;
+        Vector2 position = Position + new Vector2(x * (Constants.ScaledTileSize + spacing), gridOffsetY + y * (Constants.ScaledTileSize + spacing));
+        Rectangle destination = new(position.X, position.Y, Constants.ScaledTileSize, Constants.ScaledTileSize);
         DrawRectangleLinesEx(destination, 3, Color.Red);
       }
 
-      // Always draw the preview using the absolute selected tile index
+      // Draw the preview aligned with the grid - center it horizontally
       Rectangle selectedTileRect = GameEditorViewModel.Tileset.Tiles[GameEditorViewModel.Tileset.SelectedTileIndex];
-      DrawTexturePro(GameEditorViewModel.Tileset.Texture, selectedTileRect, new Rectangle(Position.X + Settings.Padding, Position.Y - 66, Settings.TileSize * 4, Settings.TileSize * 4), Vector2.Zero, 0.0f, Color.White);
+      float previewSize = Constants.TileSize * 4;
+      DrawTexturePro(GameEditorViewModel.Tileset.Texture, selectedTileRect, new Rectangle(Position.X, Position.Y, previewSize, previewSize), Vector2.Zero, 0.0f, Color.White);
     }
   }
+
+  void DrawTilesetGrid()
+  {
+    // Offset the grid down to make space for the tile preview
+    float gridOffsetY = Constants.TileSize * 4 + Constants.Padding;
+
+    // Draw horizontal grid lines
+    for (int row = 0; row <= gridRows; row++)
+    {
+      float y = Position.Y + gridOffsetY + (row * (Constants.ScaledTileSize + spacing));
+      float startX = Position.X;
+      float endX = Position.X + Constants.Padding + (gridCols * (Constants.ScaledTileSize + spacing));
+      DrawLineEx(new Vector2(startX, y), new Vector2(endX, y), 1, Color.LightGray);
+    }
+
+    // Draw vertical grid lines
+    for (int col = 0; col <= gridCols; col++)
+    {
+      float x = Position.X + (col * (Constants.ScaledTileSize + spacing));
+      float startY = Position.Y + gridOffsetY;
+      float endY = Position.Y + gridOffsetY + (gridRows * (Constants.ScaledTileSize + spacing));
+      DrawLineEx(new Vector2(x, startY), new Vector2(x, endY), 1, Color.LightGray);
+    }
+
+    // Draw tiles
+    for (int i = 0; i < TilesOnPage.Count(); i++)
+    {
+      int x = i % panelTilesWide;
+      int y = i / panelTilesWide;
+      Vector2 position = Position + new Vector2(x * (Constants.ScaledTileSize + spacing), gridOffsetY + y * (Constants.ScaledTileSize + spacing));
+      Rectangle destination = new Rectangle(position.X, position.Y, Constants.ScaledTileSize, Constants.ScaledTileSize);
+      DrawTexturePro(GameEditorViewModel.Tileset.Texture, TilesOnPage.ElementAt(i), destination, Vector2.Zero, 0.0f, Color.White);
+    }
+  }
+
 }

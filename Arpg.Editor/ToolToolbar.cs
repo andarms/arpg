@@ -11,7 +11,7 @@ public enum Tools
 
 public class ToolToolbar
 {
-  Vector2 Position = new(GetScreenWidth() - Settings.Padding - MiniMapPanel.Size.X, Settings.Padding * 3 + MiniMapPanel.Size.Y + LayersToolbar.Size.Y);
+  Vector2 Position = new(GetScreenWidth() - Constants.Padding - 416, Constants.Padding * 2 + LayersToolbar.Size.Y + 32);
   public static Vector2 Size = new(240, 32);
   Rectangle Button1;
   Rectangle Button2;
@@ -92,16 +92,16 @@ public class ToolToolbar
   public void DrawButton()
   {
     Rectangle source1 = new(160, 112, 16, 16);
-    DrawTexturePro(Settings.CursorTexture, source1, Button1, Vector2.Zero, 0.0f, GetButtonColor(0));
+    DrawTexturePro(Constants.CursorTexture, source1, Button1, Vector2.Zero, 0.0f, GetButtonColor(0));
 
     Rectangle source2 = new(208, 112, 16, 16);
-    DrawTexturePro(Settings.CursorTexture, source2, Button2, Vector2.Zero, 0.0f, GetButtonColor(1));
+    DrawTexturePro(Constants.CursorTexture, source2, Button2, Vector2.Zero, 0.0f, GetButtonColor(1));
 
     Rectangle source3 = new(144, 112, 16, 16);
-    DrawTexturePro(Settings.CursorTexture, source3, Button3, Vector2.Zero, 0.0f, GetButtonColor(2));
+    DrawTexturePro(Constants.CursorTexture, source3, Button3, Vector2.Zero, 0.0f, GetButtonColor(2));
 
     Rectangle source4 = new(64, 16, 16, 16);
-    DrawTexturePro(Settings.CursorTexture, source4, Button4, Vector2.Zero, 0.0f, GetButtonColor(3));
+    DrawTexturePro(Constants.CursorTexture, source4, Button4, Vector2.Zero, 0.0f, GetButtonColor(3));
   }
 
   public Color GetButtonColor(int tool)

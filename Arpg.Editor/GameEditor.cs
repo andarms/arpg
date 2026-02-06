@@ -4,14 +4,14 @@ public class GameEditor
 {
   readonly TilesetPanel tileset = new();
   readonly MapPanel mapPanel = new();
-  readonly MiniMapPanel miniMapPanel = new();
+
 
   readonly LayersToolbar layersToolbar = new();
   readonly ToolToolbar toolToolbar = new();
 
   public GameEditor()
   {
-    GameEditorViewModel.CreateTilemap(25, 12, "Textures/tileset.png");
+    GameEditorViewModel.CreateTilemap(25, 20, "Textures/tileset.png");
     GameEditorViewModel.SelectedLayer = 0;
     GameEditorViewModel.SelectedTool = 0;
   }
@@ -39,7 +39,6 @@ public class GameEditor
       tileset.Draw();
     }
 
-    miniMapPanel.Draw();
     layersToolbar.Draw();
     toolToolbar.Draw();
   }

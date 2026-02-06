@@ -2,7 +2,7 @@ namespace Arpg.Editor;
 
 public class LayersToolbar
 {
-  Vector2 Position = new(GetScreenWidth() - MiniMapPanel.Size.X - Settings.Padding, Settings.Padding + MiniMapPanel.Size.Y + Settings.Padding);
+  Vector2 Position = new(GetScreenWidth() - 416 - Constants.Padding, Constants.Padding * 2 + Constants.Padding);
   public static Vector2 Size = new(200, 32);
 
   Rectangle Button1;
@@ -45,15 +45,15 @@ public class LayersToolbar
   {
     // DrawRectangleV(Position, Size, Color.DarkGray);
     DrawRectangleRec(Button1, GetButtonColor(0));
-    DrawTextEx(Settings.DefaultFont, "1", new Vector2(Button1.X + 10, Button1.Y), 32, 0, Color.Black);
+    DrawTextEx(Constants.DefaultFont, "1", new Vector2(Button1.X + 10, Button1.Y), 32, 0, Color.Black);
     DrawRectangleRec(Button2, GetButtonColor(1));
-    DrawTextEx(Settings.DefaultFont, "2", new Vector2(Button2.X + 10, Button2.Y), 32, 0, Color.Black);
+    DrawTextEx(Constants.DefaultFont, "2", new Vector2(Button2.X + 10, Button2.Y), 32, 0, Color.Black);
     DrawRectangleRec(Button3, GetButtonColor(2));
-    DrawTextEx(Settings.DefaultFont, "3", new Vector2(Button3.X + 10, Button3.Y), 32, 0, Color.Black);
+    DrawTextEx(Constants.DefaultFont, "3", new Vector2(Button3.X + 10, Button3.Y), 32, 0, Color.Black);
     DrawRectangleRec(Button4, GetButtonColor(3));
-    DrawTextEx(Settings.DefaultFont, "C", new Vector2(Button4.X + 10, Button4.Y), 32, 0, Color.Black);
+    DrawTextEx(Constants.DefaultFont, "C", new Vector2(Button4.X + 10, Button4.Y), 32, 0, Color.Black);
     DrawRectangleRec(Button5, GetButtonColor(4));
-    DrawTextEx(Settings.DefaultFont, "GO", new Vector2(Button5.X + 2, Button5.Y), 32, 0, Color.Black);
+    DrawTextEx(Constants.DefaultFont, "GO", new Vector2(Button5.X + 2, Button5.Y), 32, 0, Color.Black);
   }
 
 
