@@ -27,7 +27,10 @@ public class MapPanel
 
   public void Update()
   {
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
     // Handle collision rectangle creation for Collision layer
     if (GameEditorViewModel.SelectedLayer == (int)TileLayer.Collision)
@@ -50,7 +53,10 @@ public class MapPanel
   void HandleCollisionRectangleInput()
   {
     Vector2 mousePos = GetMousePosition();
-    if (!CheckCollisionPointRec(mousePos, bounds)) return;
+    if (!CheckCollisionPointRec(mousePos, bounds))
+    {
+      return;
+    }
 
     Vector2 snappedPos = SnapToCollisionGrid(mousePos);
 
@@ -123,18 +129,32 @@ public class MapPanel
 
   void HandleCameraScrolling()
   {
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
     Vector2 scrollDelta = Vector2.Zero;
 
     if (IsKeyPressed(KeyboardKey.Up))
+    {
       scrollDelta.Y = ScrollSpeed;
+    }
+
     if (IsKeyPressed(KeyboardKey.Down))
+    {
       scrollDelta.Y = -ScrollSpeed;
+    }
+
     if (IsKeyPressed(KeyboardKey.Left))
+    {
       scrollDelta.X = ScrollSpeed;
+    }
+
     if (IsKeyPressed(KeyboardKey.Right))
+    {
       scrollDelta.X = -ScrollSpeed;
+    }
 
     if (scrollDelta != Vector2.Zero)
     {
@@ -145,11 +165,14 @@ public class MapPanel
 
   void ClampCameraOffset()
   {
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
     // Calculate the max scroll bounds based on map size
-    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
-    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
+    int mapWidthPx = GameEditorViewModel.Tilemap!.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap!.Height * Constants.ScaledTileSize;
     int viewWidthPx = cols * Constants.ScaledTileSize;
     int viewHeightPx = rows * Constants.ScaledTileSize;
 
@@ -297,12 +320,19 @@ public class MapPanel
 
   void DrawCollisionGrid()
   {
-    if (!GameEditorViewModel.ShowGrid) return;
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.ShowGrid)
+    {
+      return;
+    }
+
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
     // Calculate grid for entire map, not just viewport
-    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
-    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
+    int mapWidthPx = GameEditorViewModel.Tilemap!.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap!.Height * Constants.ScaledTileSize;
     int gridCols = mapWidthPx / CollisionGridSize;
     int gridRows = mapHeightPx / CollisionGridSize;
 
@@ -331,7 +361,10 @@ public class MapPanel
 
   void DrawCurrentCollisionRectangle()
   {
-    if (!collisionStartPos.HasValue) return;
+    if (!collisionStartPos.HasValue)
+    {
+      return;
+    }
 
     Vector2 mousePos = GetMousePosition();
     Vector2 snappedMousePos = SnapToCollisionGrid(mousePos);
@@ -359,8 +392,15 @@ public class MapPanel
 
   void DrawGrid()
   {
-    if (!GameEditorViewModel.ShowGrid) return;
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.ShowGrid)
+    {
+      return;
+    }
+
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
     Vector2 gridPosition = Position + CameraOffset;
 
@@ -391,10 +431,13 @@ public class MapPanel
 
   void DrawScrollbars()
   {
-    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true) return;
+    if (!GameEditorViewModel.Tilemap?.IsLoaded ?? true)
+    {
+      return;
+    }
 
-    int mapWidthPx = GameEditorViewModel.Tilemap.Width * Constants.ScaledTileSize;
-    int mapHeightPx = GameEditorViewModel.Tilemap.Height * Constants.ScaledTileSize;
+    int mapWidthPx = GameEditorViewModel.Tilemap!.Width * Constants.ScaledTileSize;
+    int mapHeightPx = GameEditorViewModel.Tilemap!.Height * Constants.ScaledTileSize;
     int viewportWidth = cols * Constants.ScaledTileSize;
     int viewportHeight = rows * Constants.ScaledTileSize;
 

@@ -17,21 +17,30 @@ public class TilemapViewModel
 
   public void AddCollisionRectangle(Vector2 position, Vector2 size, bool solid = true)
   {
-    if (tilemapData == null) return;
+    if (tilemapData == null)
+    {
+      return;
+    }
 
     tilemapData.CollisionRectangles.Add(new Tilemap.CollisionRectangle(position, size, solid));
   }
 
   public void RemoveCollisionRectangle(int index)
   {
-    if (tilemapData == null || index < 0 || index >= tilemapData.CollisionRectangles.Count) return;
+    if (tilemapData == null || index < 0 || index >= tilemapData.CollisionRectangles.Count)
+    {
+      return;
+    }
 
     tilemapData.CollisionRectangles.RemoveAt(index);
   }
 
   public int FindCollisionRectangleAt(Vector2 point)
   {
-    if (tilemapData == null) return -1;
+    if (tilemapData == null)
+    {
+      return -1;
+    }
 
     for (int i = tilemapData.CollisionRectangles.Count - 1; i >= 0; i--)
     {
@@ -83,14 +92,17 @@ public class TilemapViewModel
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Failed to load tilemap: {ex.Message}");
+      System.Console.WriteLine($"Failed to load tilemap: {ex.Message}");
       // Could add error handling/notification to UI here
     }
   }
 
   public void Save(string filePath = "map.data")
   {
-    if (tilemapData == null) return;
+    if (tilemapData == null)
+    {
+      return;
+    }
 
     try
     {
@@ -98,7 +110,7 @@ public class TilemapViewModel
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Failed to save tilemap: {ex.Message}");
+      System.Console.WriteLine($"Failed to save tilemap: {ex.Message}");
       // Could add error handling/notification to UI here
     }
   }

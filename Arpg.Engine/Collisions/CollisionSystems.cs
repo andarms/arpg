@@ -9,7 +9,9 @@ public class CollisionSystem
   public void RegisterGameObject(GameObject gameObject, GameObjectGroup group)
   {
     if (!colliderGroups.ContainsKey(group))
+    {
       colliderGroups[group] = [];
+    }
 
     colliderGroups[group].Add(gameObject);
   }
@@ -29,7 +31,10 @@ public class CollisionSystem
 
     foreach (var group in colliderGroups.Keys)
     {
-      if (excludeGroup != null && group == excludeGroup) continue;
+      if (excludeGroup != null && group == excludeGroup)
+      {
+        continue;
+      }
 
       foreach (var obj in colliderGroups[group])
       {
@@ -107,7 +112,10 @@ public class CollisionSystem
   {
     foreach (var group in colliderGroups.Keys)
     {
-      if (excludeGroup != null && group == excludeGroup) continue;
+      if (excludeGroup != null && group == excludeGroup)
+      {
+        continue;
+      }
 
       foreach (var obj in colliderGroups[group])
       {

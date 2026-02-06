@@ -19,7 +19,10 @@ public class Window(string windowTitle = "ARPG")
 
   private void SwitchToGameLoop()
   {
-    if (GameLoop == null) return;
+    if (GameLoop == null)
+    {
+      return;
+    }
 
     // Current loop handles its own cleanup
     if (currentLoop != null)
@@ -36,7 +39,10 @@ public class Window(string windowTitle = "ARPG")
   private void SwitchToEditorLoop()
   {
 #if DEBUG
-    if (EditorLoop == null) return;
+    if (EditorLoop == null)
+    {
+      return;
+    }
 
     // Current loop handles its own cleanup
     if (currentLoop != null)

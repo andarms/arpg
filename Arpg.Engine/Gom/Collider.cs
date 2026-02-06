@@ -35,7 +35,10 @@ public class Collider : GameObjectComponent
 
   internal void UpdateCollisionEvents()
   {
-    if (Solid) return; // Only non-solid colliders trigger events
+    if (Solid)
+    {
+      return; // Only non-solid colliders trigger events
+    }
 
     // Check for new collisions (OnCollisionEnter)
     foreach (var collision in currentCollisions)

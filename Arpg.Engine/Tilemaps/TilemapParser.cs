@@ -190,9 +190,13 @@ public static class TilemapParser
       if (keyValue.Length == 2)
       {
         if (keyValue[0] == "Width")
+        {
           width = int.Parse(keyValue[1]);
+        }
         else if (keyValue[0] == "Height")
+        {
           height = int.Parse(keyValue[1]);
+        }
       }
     }
 

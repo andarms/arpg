@@ -50,7 +50,10 @@ public class AnimatedSprite : Sprite
 
   public override void Draw(Vector2 position)
   {
-    if (animationName == string.Empty) return;
+    if (animationName == string.Empty)
+    {
+      return;
+    }
 
     DrawTexturePro(
       Texture,

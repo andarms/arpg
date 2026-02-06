@@ -74,8 +74,15 @@ public class ToolToolbar
 
     if (IsKeyPressed(KeyboardKey.F))
     {
-      if (GameEditorViewModel.Tilemap == null) return;
-      if (GameEditorViewModel.Tileset == null || GameEditorViewModel.Tileset.SelectedTileIndex == -1) return;
+      if (GameEditorViewModel.Tilemap == null)
+      {
+        return;
+      }
+
+      if (GameEditorViewModel.Tileset == null || GameEditorViewModel.Tileset.SelectedTileIndex == -1)
+      {
+        return;
+      }
 
       GameEditorViewModel.Tilemap.FillLayer(
         GameEditorViewModel.SelectedLayer,
