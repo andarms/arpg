@@ -25,7 +25,7 @@ public class TilemapLayer
     // Load from AssetsManager if available
     if (AssetsManager.Maps.TryGetValue(name, out List<int>? loadedTiles))
     {
-      System.Console.WriteLine($"Loaded tilemap '{name}' with {loadedTiles.Count} tiles.");
+      Console.WriteLine($"Loaded tilemap '{name}' with {loadedTiles.Count} tiles.");
       for (int i = 0; i < Math.Min(loadedTiles.Count, tiles.Count); i++)
       {
         tiles[i] = loadedTiles[i];

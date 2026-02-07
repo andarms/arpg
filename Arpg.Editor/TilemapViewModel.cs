@@ -12,6 +12,8 @@ public class TilemapViewModel
   public int Height => tilemapData?.Height ?? 0;
   public bool IsLoaded => tilemapData != null;
 
+  public string FilePath { get; private set; } = string.Empty;
+
   // Collision rectangle management
   public List<Tilemap.CollisionRectangle> CollisionRectangles => tilemapData?.CollisionRectangles ?? [];
 
@@ -76,7 +78,7 @@ public class TilemapViewModel
     {
       var baseTilemap = TilemapService.LoadFromFile(filePath);
       tilemapData = new EditorTilemap(baseTilemap.Width, baseTilemap.Height, baseTilemap.Tileset, baseTilemap.TilesetPath);
-
+      FilePath = filePath;
       // Copy layer data
       for (int layer = 0; layer < baseTilemap.Layers.Length; layer++)
       {
@@ -92,12 +94,12 @@ public class TilemapViewModel
     }
     catch (Exception ex)
     {
-      System.Console.WriteLine($"Failed to load tilemap: {ex.Message}");
+      Console.WriteLine($"Failed to load tilemap: {ex.Message}");
       // Could add error handling/notification to UI here
     }
   }
 
-  public void Save(string filePath = "map.room")
+  public void Save()
   {
     if (tilemapData == null)
     {
@@ -106,11 +108,11 @@ public class TilemapViewModel
 
     try
     {
-      TilemapService.SaveToFile(tilemapData, filePath);
+      TilemapService.SaveToFile(tilemapData, FilePath);
     }
     catch (Exception ex)
     {
-      System.Console.WriteLine($"Failed to save tilemap: {ex.Message}");
+      Console.WriteLine($"Failed to save tilemap: {ex.Message}");
       // Could add error handling/notification to UI here
     }
   }

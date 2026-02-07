@@ -194,8 +194,10 @@ public class RoomsSelectionScene : Scene
 
     // Draw instructions at bottom
     int instructionsY = screenHeight - 30;
-    DrawTextEx(Constants.DefaultFont, "Use [ up / down ] to navigate, Enter to select, Esc to cancel",
-               new Vector2(PADDING, instructionsY), 16, 1, Color.LightGray);
+    DrawTextEx(
+      Constants.DefaultFont,
+      "Use [ up / down ] to navigate, Enter to select, Esc to cancel",
+      new Vector2(PADDING, instructionsY), 16, 1, Color.LightGray);
   }
 
   private void DrawScrollIndicator(int screenWidth, int listStartY, int availableHeight)
@@ -220,10 +222,9 @@ public class RoomsSelectionScene : Scene
     DrawRectangle(scrollBarX, thumbY, scrollBarWidth, thumbHeight, Color.LightGray);
   }
 
-  private void OnRoomSelected(string roomName)
+  private static void OnRoomSelected(string roomName)
   {
-    // TODO: Implement room selection logic
-    // This could load the room in the editor, switch scenes, etc.
-    Console.WriteLine($"Selected room: {roomName}");
+    GameEditorViewModel.LoadTilemap(roomName);
+    ScenesController.PopAll();
   }
 }

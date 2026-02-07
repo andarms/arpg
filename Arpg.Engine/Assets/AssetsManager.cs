@@ -32,7 +32,7 @@ public static class AssetsManager
     }
     else
     {
-      System.Console.WriteLine($"Textures directory not found: {texturesPath}");
+      Console.WriteLine($"Textures directory not found: {texturesPath}");
     }
 
     // Load fonts
@@ -56,7 +56,7 @@ public static class AssetsManager
     }
     else
     {
-      System.Console.WriteLine($"Tilemaps directory not found: {tilemapsPath}");
+      Console.WriteLine($"Tilemaps directory not found: {tilemapsPath}");
     }
   }
 
@@ -75,7 +75,7 @@ public static class AssetsManager
     }
     else
     {
-      System.Console.WriteLine($"Tilemap layer file not found: {filePath}");
+      Console.WriteLine($"Tilemap layer file not found: {filePath}");
     }
     return tiles;
   }

@@ -129,6 +129,14 @@ public static class ScenesController
     }
   }
 
+  public static void PopAll()
+  {
+    while (sceneStack.Count > 0)
+    {
+      PopScene();
+    }
+  }
+
   public static T? GetScene<T>() where T : Scene
   {
     return scenes.TryGetValue(typeof(T), out var scene) ? scene as T : null;

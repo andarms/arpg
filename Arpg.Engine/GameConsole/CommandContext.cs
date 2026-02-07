@@ -23,14 +23,14 @@ public class CommandContext : ICommandContext
   public void Output(string message)
   {
     outputBuffer.Add(message);
-    System.Console.WriteLine(message); // Also output to regular console
+    Console.WriteLine(message); // Also output to regular console
   }
 
   public void OutputError(string message)
   {
     var errorMessage = $"ERROR: {message}";
     outputBuffer.Add(errorMessage);
-    System.Console.WriteLine(errorMessage); // Also output to regular console
+    Console.WriteLine(errorMessage); // Also output to regular console
   }
 
   public T? GetService<T>() where T : class
