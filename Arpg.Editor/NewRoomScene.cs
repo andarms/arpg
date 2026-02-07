@@ -1,5 +1,6 @@
 using Arpg.Editor.Components;
 using Arpg.Engine.Scenes;
+using System.IO;
 
 namespace Arpg.Editor;
 
@@ -115,10 +116,51 @@ public class NewRoomScene : Scene
       return;
     }
 
-    // TODO: Actually create the room with the specified parameters
-    Console.WriteLine($"Creating room: {roomName} ({width}x{height})");
+    try
+    {
+      // Split room name to handle folder structure
+      var pathParts = roomName.Split('/', StringSplitOptions.RemoveEmptyEntries);
+      string baseRoomsPath = "C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Rooms";
 
-    // For now, just close the scene
+      // Build the full directory path
+      string directoryPath = baseRoomsPath;
+      for (int i = 0; i < pathParts.Length - 1; i++)
+      {
+        directoryPath = Path.Combine(directoryPath, pathParts[i]);
+      }
+
+      // Create the directory if it doesn't exist
+      if (!Directory.Exists(directoryPath))
+      {
+        Directory.CreateDirectory(directoryPath);
+      }
+
+      // Create the room file path
+      string roomFileName = pathParts.Length > 0 ? pathParts[^1] + ".room" : roomName + ".room";
+      string fullRoomPath = Path.Combine(directoryPath, roomFileName);
+
+      // Create a new tilemap with specified dimensions
+      // Using a default tileset path - you may want to make this configurable
+      string defaultTilesetPath = "Textures/tileset.png";
+      GameEditorViewModel.CreateTilemap(width, height, defaultTilesetPath);
+
+      // Set the filepath and save
+      if (GameEditorViewModel.Tilemap != null)
+      {
+        GameEditorViewModel.Tilemap.FilePath = fullRoomPath;
+        GameEditorViewModel.Tilemap.Save();
+        Console.WriteLine($"Created room: {roomName} ({width}x{height}) at {fullRoomPath}");
+        ScenesController.SwitchTo<RoomEditorScene>();
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Failed to create room: {ex.Message}");
+      // TODO: Show error message to user
+      return;
+    }
+
+    // Close the scene
     ScenesController.PopScene();
   }
 

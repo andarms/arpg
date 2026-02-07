@@ -5,15 +5,11 @@ namespace Arpg.Editor;
 
 public class RoomsService
 {
-  private string[]? cachedRooms = null;
+
 
   public string[] GetAllRooms()
   {
-    if (cachedRooms == null)
-    {
-      cachedRooms = LoadRoomsFromProject();
-    }
-    return cachedRooms;
+    return LoadRoomsFromProject();
   }
 
   public string? GetRoomByIndex(int index)
@@ -70,11 +66,6 @@ public class RoomsService
     // Return relative paths from the Rooms directory
     return [.. roomFiles.Select(file => Path.GetRelativePath(fullPath, file))];
   }
-
-  public void ClearCache()
-  {
-    cachedRooms = null;
-  }
 }
 
 public class RoomsSelectionScene : Scene
@@ -100,6 +91,18 @@ public class RoomsSelectionScene : Scene
     {
       roomsList.SelectNext();
     }
+  }
+
+  public override void OnEnter()
+  {
+    base.OnEnter();
+    LoadAvailableRooms();
+  }
+
+  public override void OnExit()
+  {
+    base.OnExit();
+    roomsList = null!;
   }
 
   public override void Update(float dt)
@@ -206,8 +209,27 @@ public class RoomsSelectionScene : Scene
 
   private static void OnRoomSelected(string roomName)
   {
-    GameEditorViewModel.LoadTilemap(roomName);
+    // Build the full path to the room file
+    string projectRoot = GetProjectRoot();
+    string fullRoomPath = Path.Combine(projectRoot, "Arpg.Game", "Assets", "Rooms", roomName);
+
+    GameEditorViewModel.LoadTilemap(fullRoomPath);
     ScenesController.PopAll();
-    ScenesController.SwitchTo<GameEditorScene>();
+    ScenesController.SwitchTo<RoomEditorScene>();
+  }
+
+  private static string GetProjectRoot()
+  {
+    string currentDir = AppContext.BaseDirectory;
+    DirectoryInfo? dir = new DirectoryInfo(currentDir);
+    while (dir != null)
+    {
+      if (dir.GetFiles("*.sln").Any())
+      {
+        return dir.FullName;
+      }
+      dir = dir.Parent;
+    }
+    throw new DirectoryNotFoundException("Could not find project root (no .sln file found)");
   }
 }

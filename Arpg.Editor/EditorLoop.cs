@@ -11,7 +11,7 @@ public class EditorLoop : ILoop
 
   public void Initialize()
   {
-    ScenesController.AddScene(new GameEditorScene());
+    ScenesController.AddScene(new RoomEditorScene());
     ScenesController.AddScene(new ConsoleScene());
     ScenesController.AddScene(new RoomsSelectionScene());
     ScenesController.AddScene(new NewRoomScene());

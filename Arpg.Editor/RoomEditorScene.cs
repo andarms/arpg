@@ -3,14 +3,14 @@ using Arpg.Engine.Scenes;
 
 namespace Arpg.Editor;
 
-public class GameEditorScene : Scene
+public class RoomEditorScene : Scene
 {
   readonly TilesetPanel tileset = new();
   readonly MapPanel mapPanel = new();
   readonly LayersToolbar layersToolbar = new();
   readonly ToolToolbar toolToolbar = new();
 
-  public GameEditorScene()
+  public RoomEditorScene()
   {
     BackgroundColor = Color.Black;
   }

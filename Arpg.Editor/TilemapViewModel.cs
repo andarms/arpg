@@ -12,7 +12,7 @@ public class TilemapViewModel
   public int Height => tilemapData?.Height ?? 0;
   public bool IsLoaded => tilemapData != null;
 
-  public string FilePath { get; private set; } = string.Empty;
+  public string FilePath { get; set; } = string.Empty;
 
   // Collision rectangle management
   public List<Tilemap.CollisionRectangle> CollisionRectangles => tilemapData?.CollisionRectangles ?? [];
