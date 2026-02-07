@@ -1,7 +1,7 @@
 using Arpg.Editor.GameConsole;
 using Arpg.Engine.Scenes;
 
-namespace Arpg.Editor;
+namespace Arpg.Editor.RoomsEditor;
 
 public class RoomEditorScene : Scene
 {

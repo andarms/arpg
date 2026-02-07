@@ -1,6 +1,6 @@
 using Arpg.Engine.Tilemaps;
 
-namespace Arpg.Editor;
+namespace Arpg.Editor.RoomsEditor;
 
 public class EditorTilemap : Tilemap
 {

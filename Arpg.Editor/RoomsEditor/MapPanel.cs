@@ -1,4 +1,4 @@
-namespace Arpg.Editor;
+namespace Arpg.Editor.RoomsEditor;
 
 public class MapPanel
 {

@@ -1,4 +1,5 @@
 using Arpg.Editor.Components;
+using Arpg.Editor.RoomsEditor;
 using Arpg.Editor.Utils;
 using Arpg.Engine.Scenes;
 
