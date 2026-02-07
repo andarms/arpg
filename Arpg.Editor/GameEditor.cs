@@ -18,9 +18,6 @@ public class GameEditorScene : Scene
   public override void Initialize()
   {
     base.Initialize();
-    GameEditorViewModel.CreateTilemap(25, 20, "Textures/tileset.png");
-    GameEditorViewModel.SelectedLayer = 0;
-    GameEditorViewModel.SelectedTool = 0;
   }
 
   public override void Update(float dt)

@@ -48,6 +48,8 @@ public class ConsoleScene : Scene
   void RegisterEditorCommands()
   {
     consoleManager.RegisterCommand(new LoadCommand());
+    consoleManager.RegisterCommand(new CreateCommand());
+    consoleManager.RegisterCommand(new MenuCommand());
 
     consoleManager.RegisterService(new RoomsService());
   }

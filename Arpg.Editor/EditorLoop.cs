@@ -11,12 +11,12 @@ public class EditorLoop : ILoop
 
   public void Initialize()
   {
-    // Create and add the main editor scene
-    var editorScene = new GameEditorScene();
-    ScenesController.AddScene(editorScene);
+    ScenesController.AddScene(new GameEditorScene());
     ScenesController.AddScene(new ConsoleScene());
     ScenesController.AddScene(new RoomsSelectionScene());
-    ScenesController.SwitchTo<GameEditorScene>();
+    ScenesController.AddScene(new NewRoomScene());
+    ScenesController.AddScene(new EditorMenuScene());
+    ScenesController.SwitchTo<EditorMenuScene>();
   }
 
   public void Update(float deltaTime)

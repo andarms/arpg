@@ -79,7 +79,7 @@ public class RoomsService
 
 public class RoomsSelectionScene : Scene
 {
-  private ListSelection<string> roomsList = null!;
+  private SelectionList<string> roomsList = null!;
   private readonly RoomsService roomsService = new();
   private const int ITEM_HEIGHT = 30;
   private const int PADDING = 20;
@@ -95,7 +95,7 @@ public class RoomsSelectionScene : Scene
   private void LoadAvailableRooms()
   {
     var rooms = roomsService.GetAllRooms().ToList();
-    roomsList = new ListSelection<string>(rooms);
+    roomsList = new SelectionList<string>(rooms);
     if (rooms.Count > 0)
     {
       roomsList.SelectNext();
@@ -165,26 +165,8 @@ public class RoomsSelectionScene : Scene
     int visibleItems = availableHeight / ITEM_HEIGHT;
     int listWidth = screenWidth - (PADDING * 2);
 
-    // Draw visible portion of the rooms list
-    int endIndex = Math.Min(scrollOffset + visibleItems, roomsList.Items.Count);
-    for (int i = scrollOffset; i < endIndex; i++)
-    {
-      int displayIndex = i - scrollOffset;
-      int itemY = listStartY + (displayIndex * ITEM_HEIGHT);
-      var itemRect = new Rectangle(PADDING, itemY, listWidth, ITEM_HEIGHT - 2);
-
-      // Draw selection highlight
-      if (i == roomsList.SelectedIndex)
-      {
-        DrawRectangle((int)itemRect.X, (int)itemRect.Y, (int)itemRect.Width, (int)itemRect.Height, Color.Blue);
-        DrawRectangleLines((int)itemRect.X, (int)itemRect.Y, (int)itemRect.Width, (int)itemRect.Height, Color.SkyBlue);
-      }
-
-      // Draw room name
-      var color = i == roomsList.SelectedIndex ? Color.White : Color.LightGray;
-      DrawTextEx(Constants.DefaultFont, roomsList.Items[i],
-                 new Vector2((int)itemRect.X + 10, (int)itemRect.Y + 5), 20, 1, color);
-    }
+    // Draw visible portion of the rooms list using ListSelection component
+    roomsList.Draw(PADDING, listStartY, listWidth, ITEM_HEIGHT, 20, scrollOffset, visibleItems);
 
     // Draw scroll indicator if needed
     if (roomsList.Items.Count > visibleItems)
@@ -226,5 +208,6 @@ public class RoomsSelectionScene : Scene
   {
     GameEditorViewModel.LoadTilemap(roomName);
     ScenesController.PopAll();
+    ScenesController.SwitchTo<GameEditorScene>();
   }
 }

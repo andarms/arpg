@@ -71,11 +71,13 @@ public static class ScenesController
   {
     IsTransitioning = true;
 
+
     // Handle previous scene cleanup
     if (currentScene != null)
     {
       previousScene = currentScene;
       previousScene.OnExit();
+      PopAll();
     }
 
     // Switch to new scene

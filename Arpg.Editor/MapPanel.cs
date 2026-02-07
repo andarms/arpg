@@ -204,18 +204,6 @@ public class MapPanel
     {
       GameEditorViewModel.Tilemap?.Save();
     }
-
-    if (IsKeyPressed(KeyboardKey.Q))
-    {
-      GameEditorViewModel.LoadTilemap("map.room");
-      CameraOffset = Vector2.Zero; // Reset camera when loading a map
-    }
-
-    if (IsKeyPressed(KeyboardKey.N))
-    {
-      GameEditorViewModel.CreateTilemap(30, 30, "Textures/tileset.png");
-      CameraOffset = Vector2.Zero; // Reset camera when creating a new map
-    }
   }
 
   Vector2 SnapToCollisionGrid(Vector2 position)
