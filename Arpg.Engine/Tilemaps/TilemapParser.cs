@@ -6,8 +6,33 @@ public static class TilemapParser
 {
   public static Tilemap LoadFromFile(string filePath, string assetsPath, string gameAssetsPath)
   {
+    if (string.IsNullOrEmpty(filePath))
+    {
+      throw new ArgumentNullException(nameof(filePath), "File path cannot be null or empty");
+    }
+    if (string.IsNullOrEmpty(assetsPath))
+    {
+      throw new ArgumentNullException(nameof(assetsPath), "Assets path cannot be null or empty");
+    }
+    if (string.IsNullOrEmpty(gameAssetsPath))
+    {
+      throw new ArgumentNullException(nameof(gameAssetsPath), "Game assets path cannot be null or empty");
+    }
+
     string path = Path.Combine(assetsPath, filePath);
+    path = Path.GetFullPath(path); // Normalize the path
+
+    if (!File.Exists(path))
+    {
+      throw new FileNotFoundException($"Tilemap file not found: {path}");
+    }
+
     string[] lines = File.ReadAllLines(path);
+
+    if (lines.Length < 3)
+    {
+      throw new InvalidDataException($"Tilemap file is too short. Expected at least 3 lines, got {lines.Length}");
+    }
 
     int width = 0, height = 0;
     string tilesetPath = "";
@@ -17,19 +42,28 @@ public static class TilemapParser
     List<Tilemap.CollisionRectangle> collisionRectangles = [];
 
     // Parse metadata
-    if (lines.Length > 1)
+    string tilesetLine = lines[1].Trim();
+    tilesetPath = ParseTilesetPath(tilesetLine);
+    if (string.IsNullOrEmpty(tilesetPath))
     {
-      string tilesetLine = lines[1].Trim();
-      tilesetPath = ParseTilesetPath(tilesetLine);
+      throw new InvalidDataException($"Invalid tileset path in line: {tilesetLine}");
     }
-    if (lines.Length > 2)
+
+    string metadataLine = lines[2].Trim();
+    (width, height) = ParseMetadata(metadataLine);
+    if (width <= 0 || height <= 0)
     {
-      string metadataLine = lines[2].Trim();
-      (width, height) = ParseMetadata(metadataLine);
+      throw new InvalidDataException($"Invalid tilemap dimensions: {width}x{height}");
     }
 
     // Load tileset from the specified path
     string fullTilesetPath = Path.Combine(gameAssetsPath, tilesetPath);
+    fullTilesetPath = Path.GetFullPath(fullTilesetPath); // Normalize the path
+    if (!File.Exists(fullTilesetPath))
+    {
+      throw new FileNotFoundException($"Tileset file not found: {fullTilesetPath}");
+    }
+
     Tileset tileset = new(LoadTexture(fullTilesetPath), 16, 16);
     Tilemap tilemapData = new(width, height, tileset, tilesetPath);
 
@@ -79,22 +113,29 @@ public static class TilemapParser
 
   private static void ParseCollisionData(string line, List<Tilemap.CollisionRectangle> collisionRectangles)
   {
+    if (string.IsNullOrWhiteSpace(line))
+    {
+      return;
+    }
+
     if (line.StartsWith("Rect="))
     {
       var rectData = line.Substring("Rect=".Length).Split(',');
-      if (rectData.Length >= 5)
+      if (rectData.Length >= 4)
       {
-        float x = float.Parse(rectData[0]);
-        float y = float.Parse(rectData[1]);
-        float rectWidth = float.Parse(rectData[2]);
-        float rectHeight = float.Parse(rectData[3]);
-        bool solid = rectData[4] == "1";
+        if (float.TryParse(rectData[0], out float x) &&
+            float.TryParse(rectData[1], out float y) &&
+            float.TryParse(rectData[2], out float rectWidth) &&
+            float.TryParse(rectData[3], out float rectHeight))
+        {
+          bool solid = rectData.Length >= 5 ? rectData[4] == "1" : true;
 
-        collisionRectangles.Add(new Tilemap.CollisionRectangle(
-          new Vector2(x, y),
-          new Vector2(rectWidth, rectHeight),
-          solid
-        ));
+          collisionRectangles.Add(new Tilemap.CollisionRectangle(
+            new Vector2(x, y),
+            new Vector2(rectWidth, rectHeight),
+            solid
+          ));
+        }
       }
     }
     else if (line.StartsWith("{") && line.Contains("x:") && line.Contains("y:") && line.Contains("width:") && line.Contains("height:"))
@@ -110,30 +151,48 @@ public static class TilemapParser
         if (keyValue.Length == 2)
         {
           string key = keyValue[0].Trim();
-          float value = float.Parse(keyValue[1].Trim());
-
-          switch (key)
+          if (float.TryParse(keyValue[1].Trim(), out float value))
           {
-            case "x": rectX = value; break;
-            case "y": rectY = value; break;
-            case "width": rectW = value; break;
-            case "height": rectH = value; break;
+            switch (key)
+            {
+              case "x": rectX = value; break;
+              case "y": rectY = value; break;
+              case "width": rectW = value; break;
+              case "height": rectH = value; break;
+            }
           }
         }
       }
 
-      collisionRectangles.Add(new Tilemap.CollisionRectangle(
-        new Vector2(rectX, rectY),
-        new Vector2(rectW, rectH),
-        true // Default to solid for old format
-      ));
+      // Only add if we have valid dimensions
+      if (rectW > 0 && rectH > 0)
+      {
+        collisionRectangles.Add(new Tilemap.CollisionRectangle(
+          new Vector2(rectX, rectY),
+          new Vector2(rectW, rectH),
+          true // Default to solid for old format
+        ));
+      }
     }
   }
 
   private static void ParseLayerHeader(string line, ref int currentLayer, ref int currentRowInLayer, ref bool inCollisionSection)
   {
-    string layerValue = line.Split('=')[1];
-    if (int.TryParse(layerValue, out int parsedLayer))
+    if (!line.Contains('='))
+    {
+      currentLayer = -1;
+      return;
+    }
+
+    var parts = line.Split('=');
+    if (parts.Length < 2)
+    {
+      currentLayer = -1;
+      return;
+    }
+
+    string layerValue = parts[1].Trim();
+    if (int.TryParse(layerValue, out int parsedLayer) && IsValidLayer(parsedLayer))
     {
       currentLayer = parsedLayer;
       currentRowInLayer = 0;
@@ -156,14 +215,28 @@ public static class TilemapParser
       return;
     }
 
+    // Check if we've exceeded the expected height for this layer
+    if (currentRowInLayer >= tilemapData.Height)
+    {
+      return; // Skip extra rows
+    }
+
     string[] tileIndices = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
     if (tileIndices.Length > 0)
     {
-      for (int x = 0; x < tileIndices.Length; x++)
+      // Ensure we don't exceed the map width
+      int maxX = Math.Min(tileIndices.Length, tilemapData.Width);
+
+      for (int x = 0; x < maxX; x++)
       {
         if (int.TryParse(tileIndices[x], out int tileIndex))
         {
           tilemapData.SetTile(currentLayer, x, currentRowInLayer, tileIndex);
+        }
+        else
+        {
+          // Invalid tile index, use empty tile
+          tilemapData.SetTile(currentLayer, x, currentRowInLayer, -1);
         }
       }
       currentRowInLayer++;

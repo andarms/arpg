@@ -16,11 +16,16 @@ public static class Settings
 
   private static void InitializeDefaults()
   {
-    // Asset paths
-    Set("AssetsPath", "Assets");
+    // Get the base directory (go up from bin/Debug/net9.0 to project root)
+    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    string projectRoot = Path.GetFullPath(Path.Combine(baseDirectory, "..", "..", "..", ".."));
+
+    // Asset paths (use normalized paths)
+    Set("AssetsPath", Path.Combine(projectRoot, "Arpg.Game", "Assets"));
     Set("TexturesPath", "Assets/Textures");
     Set("FontsPath", "Assets/Fonts");
     Set("RoomsPath", "Arpg.Game/Assets/Rooms");
+    Set("TilemapsPath", Path.Combine(projectRoot, "Arpg.Game", "Assets", "Rooms"));
     Set("DefaultTilesetPath", "Textures/TinyTown.png");
 
     // UI Settings
@@ -42,6 +47,13 @@ public static class Settings
     {
       return (T)value;
     }
+
+    // For critical path settings, throw with helpful message
+    if (typeof(T) == typeof(string) && (key.EndsWith("Path") || key.Contains("Path")))
+    {
+      throw new InvalidOperationException($"Required path setting '{key}' is not configured or is null. Check Settings.InitializeDefaults().");
+    }
+
     return default(T)!;
   }
 

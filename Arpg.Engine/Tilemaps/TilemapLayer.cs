@@ -37,11 +37,14 @@ public class TilemapLayer
   {
     get
     {
-      return tiles[index];
+      if (index >= 0 && index < tiles.Count)
+        return tiles[index];
+      return -1; // Return empty tile for invalid indices
     }
     set
     {
-      tiles[index] = value;
+      if (index >= 0 && index < tiles.Count)
+        tiles[index] = value;
     }
   }
 
