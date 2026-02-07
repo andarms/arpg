@@ -47,7 +47,7 @@ public class ConsoleScene : Scene
 
   void RegisterEditorCommands()
   {
-    consoleManager.RegisterCommand(new ShowCommand());
+    consoleManager.RegisterCommand(new LoadCommand());
 
     consoleManager.RegisterService(new RoomsService());
   }

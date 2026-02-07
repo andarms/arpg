@@ -15,6 +15,7 @@ public class EditorLoop : ILoop
     var editorScene = new GameEditorScene();
     ScenesController.AddScene(editorScene);
     ScenesController.AddScene(new ConsoleScene());
+    ScenesController.AddScene(new RoomsSelectionScene());
     ScenesController.SwitchTo<GameEditorScene>();
   }
 
