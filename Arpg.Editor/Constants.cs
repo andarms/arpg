@@ -1,8 +1,10 @@
+using Arpg.Editor.Utils;
+
 namespace Arpg.Editor;
 
 public static class Constants
 {
-  public static string TilesetPath = "C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Textures\\TinyTown.png";
+  public static string TilesetPath = FilePathService.GetTexturePath("TinyTown.png");
   public const int TileSize = 16;
   public const int ScaledTileSize = TileSize * 2;
   public const float Scale = 2.0f;

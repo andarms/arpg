@@ -1,3 +1,5 @@
+using Arpg.Editor.Utils;
+
 namespace Arpg.Editor;
 
 public static class GameEditorViewModel
@@ -18,7 +20,7 @@ public static class GameEditorViewModel
   public static void CreateTilemap(int width, int height, string? tilesetPath = null)
   {
     string actualTilesetPath = tilesetPath ?? throw new Exception("Tileset path must be provided when creating a new tilemap");
-    string fullPath = Path.Combine("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets", actualTilesetPath);
+    string fullPath = FilePathService.GetAssetPath(actualTilesetPath);
 
     Tilemap = new TilemapViewModel();
     tileset = new TilesetViewModel(fullPath);
@@ -33,7 +35,7 @@ public static class GameEditorViewModel
     // Update tileset based on loaded map's tileset
     if (Tilemap.Data?.TilesetPath is not null)
     {
-      string fullTilesetPath = Path.Combine("C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets", Tilemap.Data.TilesetPath);
+      string fullTilesetPath = FilePathService.GetAssetPath(Tilemap.Data.TilesetPath);
       tileset = new TilesetViewModel(fullTilesetPath);
     }
   }

@@ -1,12 +1,11 @@
 using Arpg.Editor.Components;
+using Arpg.Editor.Utils;
 using Arpg.Engine.Scenes;
 
 namespace Arpg.Editor;
 
 public class RoomsService
 {
-
-
   public string[] GetAllRooms()
   {
     return LoadRoomsFromProject();
@@ -30,41 +29,24 @@ public class RoomsService
 
   private string[] LoadRoomsFromProject()
   {
-    // Use the default assets path for the editor which points to Arpg.Game/Assets/
-    string assetsBasePath = "Arpg.Game/Assets";
-    string roomsPath = Path.Combine(assetsBasePath, "Rooms");
-
-    // Find project root by navigating up from the bin folder to find .sln file
-    string currentDir = AppContext.BaseDirectory;
-    string? projectRoot = null;
-
-    DirectoryInfo? dir = new DirectoryInfo(currentDir);
-    while (dir != null)
+    try
     {
-      if (dir.GetFiles("*.sln").Any())
+      string fullPath = FilePathService.GetRoomsDirectory();
+
+      if (!Directory.Exists(fullPath))
       {
-        projectRoot = dir.FullName;
-        break;
+        return [$"Rooms directory not found: {fullPath}"];
       }
-      dir = dir.Parent;
-    }
 
-    if (projectRoot == null)
+      var roomFiles = Directory.GetFiles(fullPath, "*.room", SearchOption.AllDirectories);
+
+      // Return relative paths from the Rooms directory
+      return [.. roomFiles.Select(file => Path.GetRelativePath(fullPath, file))];
+    }
+    catch (Exception ex)
     {
-      return ["Could not find project root (no .sln file found)"];
+      return [$"Error loading rooms: {ex.Message}"];
     }
-
-    string fullPath = Path.Combine(projectRoot, roomsPath);
-
-    if (!Directory.Exists(fullPath))
-    {
-      return [$"Rooms directory not found: {fullPath}"];
-    }
-
-    var roomFiles = Directory.GetFiles(fullPath, "*.room", SearchOption.AllDirectories);
-
-    // Return relative paths from the Rooms directory
-    return [.. roomFiles.Select(file => Path.GetRelativePath(fullPath, file))];
   }
 }
 
@@ -210,26 +192,12 @@ public class RoomsSelectionScene : Scene
   private static void OnRoomSelected(string roomName)
   {
     // Build the full path to the room file
-    string projectRoot = GetProjectRoot();
-    string fullRoomPath = Path.Combine(projectRoot, "Arpg.Game", "Assets", "Rooms", roomName);
+    string fullRoomPath = FilePathService.GetRoomPath(roomName);
 
     GameEditorViewModel.LoadTilemap(fullRoomPath);
     ScenesController.PopAll();
     ScenesController.SwitchTo<RoomEditorScene>();
   }
 
-  private static string GetProjectRoot()
-  {
-    string currentDir = AppContext.BaseDirectory;
-    DirectoryInfo? dir = new DirectoryInfo(currentDir);
-    while (dir != null)
-    {
-      if (dir.GetFiles("*.sln").Any())
-      {
-        return dir.FullName;
-      }
-      dir = dir.Parent;
-    }
-    throw new DirectoryNotFoundException("Could not find project root (no .sln file found)");
-  }
+
 }

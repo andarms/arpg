@@ -1,4 +1,5 @@
 using Arpg.Editor.Components;
+using Arpg.Editor.Utils;
 using Arpg.Engine.Scenes;
 using System.IO;
 
@@ -120,7 +121,7 @@ public class NewRoomScene : Scene
     {
       // Split room name to handle folder structure
       var pathParts = roomName.Split('/', StringSplitOptions.RemoveEmptyEntries);
-      string baseRoomsPath = "C:\\Users\\andar\\apps\\hamaka_studio\\arpg\\Arpg.Game\\Assets\\Rooms";
+      string baseRoomsPath = FilePathService.GetRoomsDirectory();
 
       // Build the full directory path
       string directoryPath = baseRoomsPath;
