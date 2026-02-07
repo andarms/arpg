@@ -13,7 +13,7 @@ public class Gameplay : Room
   {
     Add(new Player() { Position = new Vector2(50, 50) }, [GameObjectGroup.Player]);
 
-    tilemapData = TilemapService.LoadFromFile("map.data");
+    tilemapData = TilemapService.LoadFromFile("map.room");
 
     // Load collision objects from tilemap data
     var mapCollisions = tilemapData.CreateMapCollisionObjects();

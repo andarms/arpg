@@ -1,5 +1,5 @@
 using Arpg.Engine.Scenes;
-using Arpg.Engine.Console;
+using Arpg.Engine.GameConsole;
 using Arpg.Editor.GameConsole.Commands;
 
 namespace Arpg.Editor.GameConsole;
@@ -48,6 +48,8 @@ public class ConsoleScene : Scene
   void RegisterEditorCommands()
   {
     consoleManager.RegisterCommand(new ShowCommand());
+
+    consoleManager.RegisterService(new RoomsService());
   }
 
   public override void Update(float dt)

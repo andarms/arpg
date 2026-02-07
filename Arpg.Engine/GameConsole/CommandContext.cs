@@ -1,4 +1,4 @@
-namespace Arpg.Engine.Console;
+namespace Arpg.Engine.GameConsole;
 
 public class CommandContext : ICommandContext
 {

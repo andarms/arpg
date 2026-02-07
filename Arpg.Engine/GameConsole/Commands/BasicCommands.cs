@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Arpg.Engine.Console.Commands;
+namespace Arpg.Engine.GameConsole.Commands;
 
 public class HelpCommand(CommandRegistry registry) : BaseCommand("help", "Show available commands or help for a specific command", "help [command]", "?", "h")
 {

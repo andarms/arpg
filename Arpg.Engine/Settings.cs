@@ -20,7 +20,7 @@ public static class Settings
     Set("AssetsPath", "Assets");
     Set("TexturesPath", "Assets/Textures");
     Set("FontsPath", "Assets/Fonts");
-    Set("TilemapsPath", "Assets/Tilemaps");
+    Set("RoomsPath", "Arpg.Game/Assets/Rooms");
     Set("DefaultTilesetPath", "Textures/TinyTown.png");
 
     // UI Settings

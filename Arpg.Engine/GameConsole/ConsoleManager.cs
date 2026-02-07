@@ -1,6 +1,6 @@
-using Arpg.Engine.Console.Commands;
+using Arpg.Engine.GameConsole.Commands;
 
-namespace Arpg.Engine.Console;
+namespace Arpg.Engine.GameConsole;
 
 public class ConsoleManager
 {

@@ -97,7 +97,7 @@ public class TilemapViewModel
     }
   }
 
-  public void Save(string filePath = "map.data")
+  public void Save(string filePath = "map.room")
   {
     if (tilemapData == null)
     {

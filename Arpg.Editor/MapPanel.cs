@@ -207,7 +207,7 @@ public class MapPanel
 
     if (IsKeyPressed(KeyboardKey.Q))
     {
-      GameEditorViewModel.LoadTilemap("map.data");
+      GameEditorViewModel.LoadTilemap("map.room");
       CameraOffset = Vector2.Zero; // Reset camera when loading a map
     }
 

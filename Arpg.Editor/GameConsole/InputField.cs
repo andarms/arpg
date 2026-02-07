@@ -1,5 +1,5 @@
 using Arpg.Engine;
-using Arpg.Engine.Console;
+using Arpg.Engine.GameConsole;
 
 namespace Arpg.Editor.GameConsole;
 
