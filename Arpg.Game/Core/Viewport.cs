@@ -1,3 +1,5 @@
+using Arpg.Engine;
+
 namespace Arpg.Game.Core;
 
 public class Viewport
@@ -7,7 +9,7 @@ public class Viewport
     Target = new Vector2(0, 0),
     Offset = new Vector2(GetScreenWidth() / 2, GetScreenHeight() / 2),
     Rotation = 0.0f,
-    Zoom = Settings.ZOOM
+    Zoom = Settings.Zoom.Default
   };
 
   public Camera2D Camera => camera;
@@ -71,6 +73,27 @@ public class Viewport
              position.X > cachedBottomRight.X ||
              position.Y + size.Y < cachedTopLeft.Y ||
              position.Y > cachedBottomRight.Y);
+  }
+
+
+  public Vector2 GetCameraViewSize()
+  {
+    Vector2 screenSize = new(GetScreenWidth(), GetScreenHeight());
+    return screenSize / camera.Zoom;
+  }
+
+
+  public void SetLimits(int mapWidth, int mapHeight)
+  {
+
+    Vector2 cameraViewSize = GetCameraViewSize();
+    float mapWidthPx = mapWidth * Settings.Tiles.Size + cameraViewSize.X / 2;
+    float mapHeightPx = mapHeight * Settings.Tiles.Size + cameraViewSize.Y / 2;
+
+    float limitX = Math.Max(mapWidthPx, cameraViewSize.X);
+    float limitY = Math.Max(mapHeightPx, cameraViewSize.Y);
+
+    Game.Limits = new Vector2(limitX, limitY);
   }
 
 }
