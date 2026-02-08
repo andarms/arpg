@@ -2,14 +2,9 @@ using Arpg.Engine.Tilemaps;
 
 namespace Arpg.Editor.RoomsEditor;
 
-public class EditorTilemap : Tilemap
+public class EditorTilemap(int width, int height, Tileset tileset, string tilesetPath = "") : Tilemap(width, height, tileset, tilesetPath)
 {
   private static readonly Color FadeColor = new Color(255, 255, 255, 77); // 30% opacity
-
-  public EditorTilemap(int width, int height, Tileset tileset, string tilesetPath = "")
-    : base(width, height, tileset, tilesetPath)
-  {
-  }
 
   public void DrawWithLayerFading(Vector2 offset, int scale = 1, int selectedLayer = -1)
   {

@@ -116,6 +116,29 @@ public class TilemapViewModel
     }
   }
 
+
+  public void Resize(int newWidth, int newHeight)
+  {
+    if (tilemapData == null)
+    {
+      return;
+    }
+
+    var newTilemap = new EditorTilemap(newWidth, newHeight, tilemapData.Tileset, tilemapData.TilesetPath);
+    for (int layer = 0; layer < tilemapData.Layers.Length; layer++)
+    {
+      for (int y = 0; y < Math.Min(tilemapData.Height, newHeight); y++)
+      {
+        for (int x = 0; x < Math.Min(tilemapData.Width, newWidth); x++)
+        {
+          int tileIndex = tilemapData.GetTile(layer, x, y);
+          newTilemap.SetTile(layer, x, y, tileIndex);
+        }
+      }
+    }
+    tilemapData = newTilemap;
+  }
+
   public void SetTile(int layerIndex, int x, int y, int tileIndex)
   {
     tilemapData?.SetTile(layerIndex, x, y, tileIndex);

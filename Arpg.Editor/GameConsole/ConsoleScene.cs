@@ -50,6 +50,7 @@ public class ConsoleScene : Scene
     consoleManager.RegisterCommand(new LoadCommand());
     consoleManager.RegisterCommand(new CreateCommand());
     consoleManager.RegisterCommand(new MenuCommand());
+    consoleManager.RegisterCommand(new ResizeCommand());
 
     consoleManager.RegisterService(new RoomsService());
   }

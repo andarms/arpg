@@ -53,6 +53,8 @@ public class PlayerMoving : GameObjectState
           case Direction.Right:
             animatedSprite.Play("WalkRight");
             break;
+          default:
+            break;
         }
       }
     }
